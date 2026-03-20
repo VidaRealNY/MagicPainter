@@ -82,7 +82,6 @@
             transition: 0.15s;
         }
         .btn-save:hover { background: #2c6288; transform: scale(1.02); }
-        .btn-save:disabled { background: #95adc7; cursor: not-allowed; }
         .btn-secondary {
             background: #f3b33d;
             color: #1e466e;
@@ -118,15 +117,21 @@
             color: #2c6288;
             font-size: 1.2rem;
         }
+        .error-box {
+            background: #fee;
+            border-left: 5px solid #e74c3c;
+            padding: 20px;
+            margin: 20px;
+            border-radius: 12px;
+            color: #c0392b;
+        }
         .intercesor-card, .charla-card, .creative-card, .equipo-card {
             background: #fafdff;
             border-radius: 20px;
             padding: 16px 20px;
             margin-bottom: 14px;
             border-left: 5px solid #f3b33d;
-            transition: 0.1s;
         }
-        .flex-between { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
         footer {
             text-align: center;
             margin-top: 48px;
@@ -152,6 +157,7 @@
     </div>
 
     <div id="loading-message" class="loading">🔄 Cargando datos desde la nube de Supabase...</div>
+    <div id="error-message" style="display:none;"></div>
 
     <div id="tab-crono" class="tab-pane active-pane"><div id="crono-container"></div></div>
     <div id="tab-intercesores" class="tab-pane"><div id="intercesores-container"></div></div>
@@ -159,13 +165,15 @@
     <div id="tab-creative" class="tab-pane"><div id="creative-container"></div></div>
     <div id="tab-equipos" class="tab-pane"><div id="equipos-container"></div></div>
 
-    <footer>✅ Todos los cambios se guardan en Supabase. Cuando presiones "Guardar", TODOS los usuarios verán la información actualizada al recargar la página.</footer>
+    <footer>✅ Todos los cambios se guardan en Supabase. Cuando presiones "Guardar", TODOS los usuarios verán la información actualizada.</footer>
 </div>
 
 <script>
-    // 🔑 TUS CLAVES DE SUPABASE (ya configuradas)
+    // 🔑 TUS CLAVES DE SUPABASE (YA CONFIGURADAS)
     const SUPABASE_URL = "https://wheuagstrjeljahofgsm.supabase.co";
-    const SUPABASE_ANON_KEY = "sb_publishable_44u0IDUUGp0z-jMs0YDySg__cF"; // Copia completa si es más larga
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndoZXVhZ3N0cmplbGphaG9mZ3NtIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NDAyMDYyMiwiZXhwIjoyMDg5NTk2NjIyfQ.QweB0jmknUDhOv2d7lFKmhcIEtHj7bkxyYR3CZWPMgY";
+    
+    console.log("Conectando a Supabase...");
     
     const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     
@@ -179,8 +187,15 @@
 
     async function loadAllData() {
         document.getElementById("loading-message").style.display = "block";
+        document.getElementById("error-message").style.display = "none";
         
         try {
+            // Probar conexión
+            const { error: testError } = await supabase.from("cronograma").select("count", { count: "exact", head: true });
+            if (testError) {
+                throw new Error(testError.message);
+            }
+            
             const [cronoRes, interRes, servRes, creativeRes, equipRes] = await Promise.all([
                 supabase.from("cronograma").select("*").order("day_order", { ascending: true }),
                 supabase.from("intercesores").select("*"),
@@ -189,12 +204,32 @@
                 supabase.from("equipos_trabajo").select("*")
             ]);
             
-            if (!cronoRes.error) currentData.cronograma = cronoRes.data;
-            if (!interRes.error) currentData.intercesores = interRes.data;
-            if (!servRes.error) currentData.servidores = servRes.data;
-            if (!creativeRes.error) currentData.creative = creativeRes.data;
-            if (!equipRes.error) currentData.equipos = equipRes.data;
-        } catch(e) { console.error("Error cargando:", e); }
+            if (!cronoRes.error && cronoRes.data) currentData.cronograma = cronoRes.data;
+            if (!interRes.error && interRes.data) currentData.intercesores = interRes.data;
+            if (!servRes.error && servRes.data) currentData.servidores = servRes.data;
+            if (!creativeRes.error && creativeRes.data) currentData.creative = creativeRes.data;
+            if (!equipRes.error && equipRes.data) currentData.equipos = equipRes.data;
+            
+            if (currentData.cronograma.length === 0) {
+                document.getElementById("loading-message").innerHTML = "⚠️ No hay datos. Ejecuta el SQL en Supabase (SQL Editor) para crear las tablas con los datos iniciales.";
+                return;
+            }
+            
+        } catch(e) { 
+            console.error("Error:", e);
+            document.getElementById("loading-message").style.display = "none";
+            const errorDiv = document.getElementById("error-message");
+            errorDiv.style.display = "block";
+            errorDiv.innerHTML = `<div class="error-box">
+                <strong>❌ Error de conexión con Supabase</strong><br>
+                <strong>Mensaje:</strong> ${e.message}<br><br>
+                <strong>Soluciones:</strong><br>
+                1. Ejecuta el SQL en "SQL Editor" para crear las tablas<br>
+                2. Asegúrate que las tablas existen en "Table Editor"<br>
+                3. Verifica que la clave API sea correcta
+            </div>`;
+            return;
+        }
         
         document.getElementById("loading-message").style.display = "none";
         renderAll();
@@ -210,15 +245,15 @@
 
     function renderCronograma() {
         const container = document.getElementById("crono-container");
-        if (!currentData.cronograma.length) { container.innerHTML = "<p>No hay datos</p>"; return; }
+        if (!currentData.cronograma.length) { container.innerHTML = "<p>No hay datos. Ejecuta el SQL en Supabase.</p>"; return; }
         
         let html = `<div style="overflow-x:auto;"><table>`;
         html += `<thead><tr><th>Hora</th><th>Actividad</th><th>Detalles / Recursos</th><th>Responsable</th></tr></thead><tbody>`;
         
         currentData.cronograma.forEach((row) => {
-            const isDayHeader = row.time.includes("VIERNES") || row.time.includes("SÁBADO") || row.time.includes("DOMINGO") || row.time.includes("INICIO") || row.time.includes("SEGUNDO") || row.time.includes("TERCER");
+            const isDayHeader = row.time && (row.time.includes("VIERNES") || row.time.includes("SÁBADO") || row.time.includes("DOMINGO") || row.time.includes("INICIO") || row.time.includes("SEGUNDO") || row.time.includes("TERCER"));
             if (isDayHeader) {
-                html += `<tr class="day-header"><td colspan="4" style="text-align:center; font-weight:bold; background:#faeec2;">${row.time} ${row.activity || ''}</td></tr>`;
+                html += `<tr class="day-header"><td colspan="4" style="text-align:center; font-weight:bold; background:#faeec2;">${escapeHtml(row.time || '')} ${escapeHtml(row.activity || '')}</td></tr>`;
             } else {
                 html += `<tr>
                     <td class="editable" contenteditable="true" data-id="${row.id}" data-table="crono" data-field="time">${escapeHtml(row.time || '')}</td>
@@ -237,15 +272,15 @@
         const statusSpan = document.getElementById(statusId);
         if (statusSpan) { statusSpan.innerText = "Guardando..."; statusSpan.style.color = "#f3b33d"; }
         
-        let tableName, dataField;
-        if (tableType === "crono") { tableName = "cronograma"; dataField = "crono"; }
-        else if (tableType === "inter") { tableName = "intercesores"; dataField = "intercesores"; }
-        else if (tableType === "serv") { tableName = "servidores_charla"; dataField = "servidores"; }
-        else if (tableType === "creative") { tableName = "creative_items"; dataField = "creative"; }
-        else if (tableType === "equipos") { tableName = "equipos_trabajo"; dataField = "equipos"; }
+        let tableName;
+        if (tableType === "crono") tableName = "cronograma";
+        else if (tableType === "inter") tableName = "intercesores";
+        else if (tableType === "serv") tableName = "servidores_charla";
+        else if (tableType === "creative") tableName = "creative_items";
+        else if (tableType === "equipos") tableName = "equipos_trabajo";
         else return;
         
-        const elements = document.querySelectorAll(`[data-table="${tableType === 'crono' ? 'crono' : (tableType === 'inter' ? 'inter' : (tableType === 'serv' ? 'serv' : (tableType === 'creative' ? 'creative' : 'equipo')))}"]`);
+        const elements = document.querySelectorAll(`[data-table="${tableType}"]`);
         const updates = {};
         elements.forEach(el => {
             const id = el.getAttribute("data-id");
@@ -268,14 +303,18 @@
     function renderIntercesores() {
         const container = document.getElementById("intercesores-container");
         let html = `<div class="section-card"><div class="section-title">🕯️ Horarios de Intercesión <button class="btn-save" id="saveInterBtn">💾 Guardar todos</button></div>`;
-        currentData.intercesores.forEach(item => {
-            html += `<div class="intercesor-card">
-                <div class="flex-between"><strong contenteditable="true" class="editable" data-id="${item.id}" data-table="inter" data-field="dia">${escapeHtml(item.dia)}</strong></div>
-                <div>⏰ <span contenteditable="true" class="editable" data-id="${item.id}" data-table="inter" data-field="horario">${escapeHtml(item.horario)}</span></div>
-                <div>👥 <span contenteditable="true" class="editable" data-id="${item.id}" data-table="inter" data-field="grupo">${escapeHtml(item.grupo)}</span></div>
-                <div>🙋 <span contenteditable="true" class="editable" data-id="${item.id}" data-table="inter" data-field="responsable">${escapeHtml(item.responsable)}</span></div>
-            </div>`;
-        });
+        if (currentData.intercesores.length === 0) {
+            html += `<p>No hay datos de intercesores.</p>`;
+        } else {
+            currentData.intercesores.forEach(item => {
+                html += `<div class="intercesor-card">
+                    <div><strong contenteditable="true" class="editable" data-id="${item.id}" data-table="inter" data-field="dia">${escapeHtml(item.dia)}</strong></div>
+                    <div>⏰ <span contenteditable="true" class="editable" data-id="${item.id}" data-table="inter" data-field="horario">${escapeHtml(item.horario)}</span></div>
+                    <div>👥 <span contenteditable="true" class="editable" data-id="${item.id}" data-table="inter" data-field="grupo">${escapeHtml(item.grupo)}</span></div>
+                    <div>🙋 <span contenteditable="true" class="editable" data-id="${item.id}" data-table="inter" data-field="responsable">${escapeHtml(item.responsable)}</span></div>
+                </div>`;
+            });
+        }
         html += `<button class="btn-save btn-secondary" id="addInterBtn">+ Añadir nuevo turno</button></div>`;
         container.innerHTML = html;
         document.getElementById("saveInterBtn")?.addEventListener("click", () => saveTableData("inter", "cronoStatus"));
@@ -285,12 +324,16 @@
     function renderServidores() {
         const container = document.getElementById("servidores-container");
         let html = `<div class="section-card"><div class="section-title">🎤 Servidores por Charla <button class="btn-save" id="saveServBtn">💾 Guardar todos</button></div>`;
-        currentData.servidores.forEach(item => {
-            html += `<div class="charla-card">
-                <div><strong contenteditable="true" class="editable" data-id="${item.id}" data-table="serv" data-field="charla">${escapeHtml(item.charla)}</strong></div>
-                <div>🎧 Servidores: <span contenteditable="true" class="editable" data-id="${item.id}" data-table="serv" data-field="servidores">${escapeHtml(item.servidores)}</span></div>
-            </div>`;
-        });
+        if (currentData.servidores.length === 0) {
+            html += `<p>No hay datos de servidores.</p>`;
+        } else {
+            currentData.servidores.forEach(item => {
+                html += `<div class="charla-card">
+                    <div><strong contenteditable="true" class="editable" data-id="${item.id}" data-table="serv" data-field="charla">${escapeHtml(item.charla)}</strong></div>
+                    <div>🎧 Servidores: <span contenteditable="true" class="editable" data-id="${item.id}" data-table="serv" data-field="servidores">${escapeHtml(item.servidores)}</span></div>
+                </div>`;
+            });
+        }
         html += `<button class="btn-save btn-secondary" id="addServBtn">+ Añadir charla</button></div>`;
         container.innerHTML = html;
         document.getElementById("saveServBtn")?.addEventListener("click", () => saveTableData("serv", "cronoStatus"));
@@ -300,13 +343,17 @@
     function renderCreative() {
         const container = document.getElementById("creative-container");
         let html = `<div class="section-card"><div class="section-title">🎭 Creative - Dramas y Recursos <button class="btn-save" id="saveCreativeBtn">💾 Guardar todos</button></div>`;
-        currentData.creative.forEach(item => {
-            html += `<div class="creative-card">
-                <div><strong contenteditable="true" class="editable" data-id="${item.id}" data-table="creative" data-field="drama">${escapeHtml(item.drama)}</strong></div>
-                <div>👥 <span contenteditable="true" class="editable" data-id="${item.id}" data-table="creative" data-field="responsables">${escapeHtml(item.responsables)}</span></div>
-                <div>🎬 <span contenteditable="true" class="editable" data-id="${item.id}" data-table="creative" data-field="recursos">${escapeHtml(item.recursos)}</span></div>
-            </div>`;
-        });
+        if (currentData.creative.length === 0) {
+            html += `<p>No hay datos de Creative.</p>`;
+        } else {
+            currentData.creative.forEach(item => {
+                html += `<div class="creative-card">
+                    <div><strong contenteditable="true" class="editable" data-id="${item.id}" data-table="creative" data-field="drama">${escapeHtml(item.drama)}</strong></div>
+                    <div>👥 <span contenteditable="true" class="editable" data-id="${item.id}" data-table="creative" data-field="responsables">${escapeHtml(item.responsables)}</span></div>
+                    <div>🎬 <span contenteditable="true" class="editable" data-id="${item.id}" data-table="creative" data-field="recursos">${escapeHtml(item.recursos)}</span></div>
+                </div>`;
+            });
+        }
         html += `<button class="btn-save btn-secondary" id="addCreativeBtn">+ Añadir drama/dinámica</button></div>`;
         container.innerHTML = html;
         document.getElementById("saveCreativeBtn")?.addEventListener("click", () => saveTableData("creative", "cronoStatus"));
@@ -316,13 +363,17 @@
     function renderEquipos() {
         const container = document.getElementById("equipos-container");
         let html = `<div class="section-card"><div class="section-title">👥 Equipos de Trabajo <button class="btn-save" id="saveEquipBtn">💾 Guardar todos</button></div>`;
-        currentData.equipos.forEach(item => {
-            let personasStr = Array.isArray(item.personas) ? item.personas.join(", ") : item.personas;
-            html += `<div class="equipo-card">
-                <div><strong contenteditable="true" class="editable" data-id="${item.id}" data-table="equipo" data-field="area">${escapeHtml(item.area)}</strong></div>
-                <div>👥 <span contenteditable="true" class="editable" data-id="${item.id}" data-table="equipo" data-field="personas">${escapeHtml(personasStr)}</span></div>
-            </div>`;
-        });
+        if (currentData.equipos.length === 0) {
+            html += `<p>No hay datos de equipos.</p>`;
+        } else {
+            currentData.equipos.forEach(item => {
+                let personasStr = Array.isArray(item.personas) ? item.personas.join(", ") : item.personas;
+                html += `<div class="equipo-card">
+                    <div><strong contenteditable="true" class="editable" data-id="${item.id}" data-table="equipo" data-field="area">${escapeHtml(item.area)}</strong></div>
+                    <div>👥 <span contenteditable="true" class="editable" data-id="${item.id}" data-table="equipo" data-field="personas">${escapeHtml(personasStr)}</span></div>
+                </div>`;
+            });
+        }
         html += `<button class="btn-save btn-secondary" id="addEquipoBtn">+ Añadir equipo</button></div>`;
         container.innerHTML = html;
         document.getElementById("saveEquipBtn")?.addEventListener("click", () => saveTableData("equipos", "cronoStatus"));
@@ -336,7 +387,6 @@
 
     function escapeHtml(str) { if (!str) return ''; return str.replace(/[&<>]/g, function(m) { if (m === '&') return '&amp;'; if (m === '<') return '&lt;'; if (m === '>') return '&gt;'; return m; }); }
 
-    // Tabs
     const btns = document.querySelectorAll(".tab-btn");
     const panes = document.querySelectorAll(".tab-pane");
     btns.forEach(btn => {
