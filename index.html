@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Encuentro Cara a Cara con Dios - Programa Editable</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #f0f4f8 0%, #e6edf4 100%);
+            margin: 0;
+            padding: 24px;
+            color: #1a2c3e;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 32px;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.2);
+            overflow: hidden;
+            padding: 24px 28px 36px;
+        }
+        h1 {
+            font-size: 2rem;
+            margin: 0 0 0.25rem;
+            background: linear-gradient(135deg, #1e466e, #2c6288);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        h1 small {
+            background: linear-gradient(135deg, #f3b33d, #e09d32);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        .sub {
+            color: #4a6f8f;
+            border-left: 4px solid #f3b33d;
+            padding-left: 18px;
+            margin: 8px 0 28px;
+            font-weight: 500;
+        }
+        .tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin: 20px 0 24px;
+            border-bottom: 2px solid #e2edf2;
+            padding-bottom: 8px;
+        }
+        .tab-btn {
+            background: #f1f5f9;
+            border: none;
+            padding: 10px 28px;
+            font-weight: 600;
+            border-radius: 60px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+            color: #2c5a7a;
+        }
+        .tab-btn.active {
+            background: #1e466e;
+            color: white;
+            box-shadow: 0 6px 14px rgba(30,70,110,0.25);
+        }
+        .tab-pane {
+            display: none;
+            animation: fadeIn 0.25s ease;
+        }
+        .tab-pane.active-pane {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px);}
+            to { opacity: 1; transform: translateY(0);}
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 0.85rem;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        th {
+            background: #eef3fc;
+            padding: 14px 10px;
+            text-align: left;
+            font-weight: 700;
+            border: 1px solid #d4e2ec;
+        }
+        td {
+            border: 1px solid #e2edf2;
+            padding: 12px 10px;
+            vertical-align: top;
+            background-color: #fff;
+        }
+        .day-separator {
+            background-color: #f8f2e3 !important;
+            font-weight: 800;
+            font-size: 0.9rem;
+            border-left: 4px solid #f3b33d;
+        }
+        .day-row td {
+            background-color: #fffcf5;
+        }
+        .editable {
+            background-color: #fffef7;
+            transition: background 0.15s;
+            cursor: text;
+            border-radius: 6px;
+            padding: 2px 4px;
+        }
+        .editable:focus {
+            background-color: #fff0cf;
+            outline: 2px solid #f3b33d;
+        }
+        .section-card {
+            background: #ffffff;
+            border-radius: 28px;
+            margin: 24px 0;
+            padding: 20px 24px;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.05);
+            border: 1px solid #e9f0f5;
+        }
+        .section-title {
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin: 0 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 5px solid #f3b33d;
+            padding-left: 20px;
+        }
+        .team-grid, .vertical-list {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+        .team-card {
+            background: #fafdff;
+            border-radius: 20px;
+            padding: 16px 20px;
+            border: 1px solid #e2edf2;
+            transition: 0.1s;
+        }
+        .team-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 14px;
+            flex-wrap: wrap;
+        }
+        .team-name {
+            font-size: 1.2rem;
+            font-weight: 700;
+            background: #f0f6fa;
+            padding: 4px 14px;
+            border-radius: 40px;
+        }
+        .members-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin: 12px 0 8px;
+            align-items: center;
+        }
+        .member-tag {
+            background: #eef2fa;
+            padding: 6px 16px;
+            border-radius: 40px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.85rem;
+        }
+        .intercesor-item-vertical {
+            background: #f9fbfd;
+            border-radius: 20px;
+            padding: 16px 20px;
+            margin-bottom: 12px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 6px solid #f3b33d;
+        }
+        .intercesor-info {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            align-items: baseline;
+        }
+        .charla-serv-card {
+            background: #fefcf7;
+            border-radius: 20px;
+            padding: 14px 20px;
+            margin-bottom: 12px;
+            border: 1px solid #e9e1cf;
+        }
+        .btn-small {
+            background: #1e466e;
+            color: white;
+            border: none;
+            padding: 8px 18px;
+            border-radius: 40px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: 0.15s;
+        }
+        .btn-outline {
+            background: transparent;
+            border: 1.5px solid #2c5a7a;
+            color: #2c5a7a;
+        }
+        .remove-item {
+            background: none;
+            border: none;
+            color: #b91c1c;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 1rem;
+            padding: 4px 10px;
+            border-radius: 30px;
+        }
+        .add-input {
+            padding: 8px 14px;
+            border-radius: 40px;
+            border: 1px solid #cbdde6;
+            margin-right: 8px;
+        }
+        footer {
+            text-align: center;
+            margin-top: 48px;
+            font-size: 0.7rem;
+            color: #7b9bb0;
+        }
+        @media (max-width: 720px) {
+            .container { padding: 16px; }
+            td, th { font-size: 0.7rem; }
+        }
+        .badge-day {
+            font-weight: 800;
+            background: #f3b33d20;
+            padding: 4px 12px;
+            border-radius: 20px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>✨ ENCUENTRO CARA A CARA CON DIOS <small>“Salvos por su Gracia” · 27-29 Marzo 2026</small></h1>
+    <div class="sub">Programa integrado y editable · Todos los cambios se guardan automáticamente</div>
+
+    <div class="tabs">
+        <button class="tab-btn active" data-tab="tab-crono">📅 Cronograma</button>
+        <button class="tab-btn" data-tab="tab-intercesores">🕯️ Intercesores</button>
+        <button class="tab-btn" data-tab="tab-servidores">🎤 Servidores por Charla</button>
+        <button class="tab-btn" data-tab="tab-creative">🎭 Creative (Dramas & Detalles)</button>
+        <button class="tab-btn" data-tab="tab-equipos">👥 Equipos de Trabajo</button>
+    </div>
+
+    <!-- CRONOGRAMA CON DÍAS DESTACADOS -->
+    <div id="tab-crono" class="tab-pane active-pane">
+        <div style="overflow-x: auto;">
+            <table id="cronograma-table">
+                <thead id="crono-header"></thead>
+                <tbody id="crono-body"></tbody>
+            </table>
+        </div>
+        <div class="save-note" style="margin-top: 8px; font-size:0.75rem;">💡 Las filas con fondo dorado indican inicio de día. Edita cualquier celda haciendo clic.</div>
+    </div>
+
+    <!-- INTERCESORES (vertical) -->
+    <div id="tab-intercesores" class="tab-pane">
+        <div class="section-card">
+            <div class="section-title">🕯️ Horarios de Intercesión <button class="btn-small" id="addIntercesorBtn">+ Añadir turno</button></div>
+            <div id="intercesoresList" class="vertical-list"></div>
+        </div>
+    </div>
+
+    <!-- SERVIDORES POR CHARLA (todas las charlas) -->
+    <div id="tab-servidores" class="tab-pane">
+        <div class="section-card">
+            <div class="section-title">🎤 Servidores por Charla <button class="btn-small" id="addServidorCharlaBtn">+ Agregar charla</button></div>
+            <div id="servidoresPorCharlaContainer"></div>
+        </div>
+    </div>
+
+    <!-- CREATIVE con elementos específicos: vasos, clavos, agua, carta del Padre -->
+    <div id="tab-creative" class="tab-pane">
+        <div class="section-card">
+            <div class="section-title">🎭 Creative - Dramas, Dinámicas y Recursos <button class="btn-small" id="addCreativeItemBtn">+ Añadir elemento</button></div>
+            <div id="creativeContainer"></div>
+            <p class="save-note" style="font-size:0.7rem;">🔨 Incluye vasos, clavos, agua, dinámica de la silla y carta del Padre según la charla "Sanando el alma herida".</p>
+        </div>
+    </div>
+
+    <!-- EQUIPOS DE TRABAJO (último lugar) -->
+    <div id="tab-equipos" class="tab-pane">
+        <div class="section-card">
+            <div class="section-title">📋 Equipos de Trabajo <button class="btn-small" id="addTeamAreaBtn">+ Agregar área</button></div>
+            <div id="teamsContainer"></div>
+        </div>
+    </div>
+    <footer>✅ Los cambios se guardan automáticamente en tu navegador. Edita todo: horarios, asignaciones, listas de personas.</footer>
+</div>
+
+<script>
+    // ---------- DATA ----------
+    let programData = {
+        cronograma: {
+            headers: ["Hora", "Actividad", "Detalles / Recursos", "Responsable"],
+            rows: [
+                { time: "VIERNES 27", activity: "🔹 INICIO DÍA 1", details: "Bienvenida", responsible: "", isDayHeader: true },
+                { time: "4:00 – 5:00 pm", activity: "Llegada y organización", details: "Recoger maletas, llenar datos, etiquetar materiales", responsible: "Ministración" },
+                { time: "6:00 – 6:30 pm", activity: "Cena", details: "", responsible: "" },
+                { time: "6:30 – 7:00 pm", activity: "Bienvenida / reglamento", details: "Leer reglamento, nombrar líderes", responsible: "Coordinación" },
+                { time: "7:00 – 7:10 pm", activity: "Drama de la actitud", details: "Intro", responsible: "Frank Viola / Creative" },
+                { time: "7:10 – 7:40 pm", activity: "Charla: Todos hemos pecado", details: "Multimedia: PowerPoint + Video 'Todo en Mí' / Drama creación", responsible: "Multimedia / Creative" },
+                { time: "7:40 – 8:20 pm", activity: "Charla: Consecuencias del pecado", details: "Las 8 bendiciones, PowerPoint", responsible: "Brenda Lépez / Multimedia" },
+                { time: "8:20 – 9:30 pm", activity: "Charla: Arrepentimiento y perdón", details: "Dinámica corazones, fogata, video carta de amor", responsible: "Ps. Erick / Creative" },
+                { time: "9:30 – 10:00 pm", activity: "Prepararse para dormir", details: "", responsible: "Líderes de grupo" },
+                { time: "SÁBADO 28", activity: "🔹 SEGUNDO DÍA", details: "Mañana", responsible: "", isDayHeader: true },
+                { time: "6:00 – 6:45 am", activity: "Aseo personal", details: "", responsible: "Líderes" },
+                { time: "7:00 – 7:30 am", activity: "Desayuno + evaluación", details: "con servidores", responsible: "Por grupos" },
+                { time: "7:30 – 8:00 am", activity: "TCD: Tiempo con Dios", details: "", responsible: "Blanca Amaya" },
+                { time: "8:15 – 8:45 am", activity: "3 niveles de paternidad", details: "Citas bíblicas", responsible: "Francisco Sánchez / Multimedia" },
+                { time: "8:45 – 10:05 am", activity: "¿Qué guía tu vida?", details: "Dinámica papeles: culpa, qué dirán, resentimiento...", responsible: "Brenda Lépez / Creative" },
+                { time: "10:05 – 11:25 am", activity: "Dios quiere encuentro cara a cara", details: "Drama Jacob", responsible: "Ps. Erick / Creative" },
+                { time: "11:30 am – 12:30 pm", activity: "Sexualidad que agrada a Dios", details: "Clínica sexual", responsible: "Brenda Lépez / Creative" },
+                { time: "12:30 – 1:00 pm", activity: "Almuerzo", details: "", responsible: "" },
+                { time: "1:00 – 2:00 pm", activity: "Descanso / evaluación", details: "", responsible: "" },
+                { time: "2:00 – 4:30 pm", activity: "Sanando el alma herida", details: "Dinámica silla, lazo, vasos, clavos, recipiente agua + videos paternidades + CARTA DEL PADRE al final", responsible: "Ps. Erick / Creative / Multimedia" },
+                { time: "4:30 – 6:00 pm", activity: "Rompiendo ataduras", details: "Clínica espiritual", responsible: "Francisco Sánchez / Creative" },
+                { time: "6:00 – 7:00 pm", activity: "Cena y alabanza", details: "Evaluación con servidores", responsible: "Ministerio Alabanza" },
+                { time: "7:00 – 11:00 pm", activity: "Perdón Total", details: "3 perdones, dramas, fogata clínicas, fiesta", responsible: "Ps. Erick / Creative / Multimedia" },
+                { time: "DOMINGO 29", activity: "🔹 TERCER DÍA", details: "Cierre", responsible: "", isDayHeader: true },
+                { time: "7:00 – 7:30 am", activity: "Aseo personal", details: "", responsible: "Líderes" },
+                { time: "8:00 – 8:30 am", activity: "Desayuno evaluación", details: "", responsible: "" },
+                { time: "8:30 – 9:00 am", activity: "4 pasos intimidad con Dios", details: "PowerPoint", responsible: "Deniz Santiago / Multimedia" },
+                { time: "9:15 – 10:00 am", activity: "Cómo opera el diablo", details: "Drama encuentrista", responsible: "Frank Viola / Creative" },
+                { time: "10:00 – 11:15 am", activity: "Llenura del Espíritu Santo", details: "PowerPoint", responsible: "Ps. Erick Mercado" },
+                { time: "11:15 am – 12:45 pm", activity: "Abundancia en crisis", details: "Drama viuda de Sarepta + siembras", responsible: "Francisco Sánchez / Creative" },
+                { time: "12:45 – 1:15 pm", activity: "Almuerzo", details: "", responsible: "" },
+                { time: "1:15 – 1:45 pm", activity: "Entrega de camisetas", details: "Aseo y cambio", responsible: "Líderes grupo" },
+                { time: "1:45 – 2:30 pm", activity: "Camino a la victoria", details: "", responsible: "Brenda Lépez" },
+                { time: "2:30 pm", activity: "Regreso a iglesia", details: "", responsible: "" }
+            ]
+        },
+        equiposTrabajo: [
+            { area: "Charlas y conferencistas", personas: ["Asignados por horario"] },
+            { area: "Dramas y dinámicas", personas: ["Creative"] },
+            { area: "Alabanza y adoración", personas: ["Ministerio de Alabanza"] },
+            { area: "Multimedia", personas: ["Proyecciones, videos, PowerPoint"] },
+            { area: "Floor Manager", personas: ["Noemy Sánchez"] },
+            { area: "Atención médica", personas: ["Pendiente"] },
+            { area: "Atención a conferencistas", personas: ["Equipo anfitrión"] },
+            { area: "Preparación de mesas", personas: ["Voluntarios"] }
+        ],
+        intercesores: [
+            { dia: "Viernes 27", horario: "7:00 pm - 9:00 pm", grupo: "Grupo Aurora", responsable: "María González" },
+            { dia: "Sábado 28", horario: "6:00 am - 8:00 am", grupo: "Madrugadores", responsable: "Carlos Ruiz" },
+            { dia: "Sábado 28", horario: "2:00 pm - 5:00 pm", grupo: "Intercesores de la tarde", responsable: "Laura Méndez" },
+            { dia: "Sábado 28", horario: "8:00 pm - 11:00 pm", grupo: "Vigilia", responsable: "Samuel Pérez" },
+            { dia: "Domingo 29", horario: "8:00 am - 12:00 pm", grupo: "Cierre profético", responsable: "Pedro Díaz" }
+        ],
+        servidoresPorCharla: [
+            { charla: "Todos hemos pecado", servidores: "Juan Pérez (sonido), Ana Multimedia, Creative" },
+            { charla: "Consecuencias del pecado", servidores: "Equipo logístico: Rosa, Luis, proyecciones" },
+            { charla: "Arrepentimiento y perdón", servidores: "Creative + apoyo pastoral (2 personas)" },
+            { charla: "3 niveles de paternidad", servidores: "Francisco, soporte multimedia" },
+            { charla: "¿Qué guía tu vida?", servidores: "Brenda, 2 ayudantes dinámica" },
+            { charla: "Dios quiere encuentro cara a cara", servidores: "Erick, equipo drama Jacob" },
+            { charla: "Sexualidad que agrada a Dios", servidores: "Brenda, clínica sexual (3 facilitadores)" },
+            { charla: "Sanando el alma herida", servidores: "Erick, 4 asistentes para dinámica (vasos, clavos, lazo, agua), carta del Padre" },
+            { charla: "Rompiendo ataduras", servidores: "Francisco, clínica espiritual" },
+            { charla: "Perdón Total", servidores: "Creative + alabanza + 6 colaboradores cruces" },
+            { charla: "4 pasos intimidad con Dios", servidores: "Deniz, proyección" },
+            { charla: "Cómo opera el diablo", servidores: "Frank Viola, Creative drama" },
+            { charla: "Llenura del Espíritu Santo", servidores: "Erick, equipo de altar" },
+            { charla: "Abundancia en tiempo de crisis", servidores: "Francisco, 2 ayudantes siembra" },
+            { charla: "Camino a la victoria", servidores: "Brenda, intercesores" }
+        ],
+        creativeItems: [
+            { drama: "🎭 Drama: Cómo hizo Dios al hombre / engaño", responsables: "Frank Viola + 2 actores", recursos: "Vestimentas básicas" },
+            { drama: "❤️ Dinámica de los corazones y fogata", responsables: "Creative (Juan, Carla, equipo)", recursos: "Corazones de papel, fogata real" },
+            { drama: "⛰️ Jacob y sus encuentros con Dios", responsables: "Grupo de teatro (4 personas)", recursos: "Túnicas, proyección fondo" },
+            { drama: "📋 Clínica sexual / espiritual", responsables: "Brenda, Francisco, 4 asistentes", recursos: "Formatos impresos, mesas" },
+            { drama: "💧 Sanando el alma herida - Dinámica SILLA, LAZO, VASOS, CLAVOS y AGUA", responsables: "Ps. Erick + 4 ayudantes", recursos: "Silla, lazo, vasos de vidrio, clavos grandes, recipiente con agua, depósito" },
+            { drama: "💌 CARTA DEL PADRE (ministración final Sanando el alma herida)", responsables: "Creative, voz en off", recursos: "Carta impresa / video emotivo" },
+            { drama: "✝️ Dramas de perdón: Los dos deudores, Hijo pródigo, La cruz", responsables: "Creative + 8 actores", recursos: "Cruces, clavos, martillo, vestimentas" },
+            { drama: "🌾 Viuda de Sarepta y siembras", responsables: "Creative y producción", recursos: "Semillas, recipientes, tierra simbólica" }
+        ]
+    };
+
+    function saveAll() { localStorage.setItem("encuentro_programa_v2", JSON.stringify(programData)); }
+    function loadFromStorage() {
+        const saved = localStorage.getItem("encuentro_programa_v2");
+        if (saved) { try { programData = JSON.parse(saved); } catch(e) {} }
+        renderAll();
+    }
+
+    function renderAll() { renderCronograma(); renderEquipos(); renderIntercesoresVertical(); renderServidoresCharla(); renderCreative(); }
+
+    // CRONOGRAMA con filas de día destacadas
+    function renderCronograma() {
+        const thead = document.getElementById("crono-header");
+        const tbody = document.getElementById("crono-body");
+        if (!thead || !tbody) return;
+        thead.innerHTML = "<tr>" + programData.cronograma.headers.map(h => `<th>${h}</th>`).join("") + "</tr>";
+        tbody.innerHTML = "";
+        programData.cronograma.rows.forEach((row, idx) => {
+            const tr = document.createElement("tr");
+            if (row.isDayHeader || row.time?.includes("VIERNES") || row.time?.includes("SÁBADO") || row.time?.includes("DOMINGO")) {
+                tr.classList.add("day-row");
+                const tdTime = document.createElement("td");
+                tdTime.colSpan = 4;
+                tdTime.style.backgroundColor = "#faeec2";
+                tdTime.style.fontWeight = "bold";
+                tdTime.style.fontSize = "1.1rem";
+                tdTime.style.textAlign = "center";
+                tdTime.innerText = row.time + (row.activity ? " - " + row.activity : "");
+                tdTime.setAttribute("contenteditable", "true");
+                tdTime.classList.add("editable");
+                tdTime.addEventListener("blur", () => { programData.cronograma.rows[idx].time = tdTime.innerText.split(" - ")[0]; saveAll(); });
+                tr.appendChild(tdTime);
+                tbody.appendChild(tr);
+                return;
+            }
+            const timeCell = createEditableCell(row.time, (val) => { row.time = val; saveAll(); });
+            const actCell = createEditableCell(row.activity, (val) => { row.activity = val; saveAll(); });
+            const detCell = createEditableCell(row.details, (val) => { row.details = val; saveAll(); });
+            const respCell = createEditableCell(row.responsible, (val) => { row.responsible = val; saveAll(); });
+            tr.appendChild(timeCell); tr.appendChild(actCell); tr.appendChild(detCell); tr.appendChild(respCell);
+            tbody.appendChild(tr);
+        });
+    }
+
+    function createEditableCell(value, onSave) {
+        const td = document.createElement("td");
+        td.setAttribute("contenteditable", "true");
+        td.classList.add("editable");
+        td.innerText = value || "";
+        td.addEventListener("blur", () => { onSave(td.innerText.trim()); });
+        td.addEventListener("keypress", (e) => { if(e.key === "Enter") { e.preventDefault(); td.blur(); } });
+        return td;
+    }
+
+    // EQUIPOS (último lugar)
+    function renderEquipos() {
+        const container = document.getElementById("teamsContainer");
+        container.innerHTML = "";
+        programData.equiposTrabajo.forEach((team, idx) => {
+            const card = document.createElement("div"); card.className = "team-card";
+            card.innerHTML = `<div class="team-header"><span class="team-name" contenteditable="true" class="editable">${team.area}</span><button class="remove-item">🗑 Eliminar</button></div><div class="members-list" id="members-${idx}"></div><div><input class="add-input" placeholder="Nuevo integrante" id="input-${idx}"><button class="btn-small btn-outline add-member-btn" data-idx="${idx}">+ Añadir</button></div>`;
+            const nameSpan = card.querySelector(".team-name");
+            nameSpan.addEventListener("blur", () => { team.area = nameSpan.innerText; saveAll(); });
+            const membersDiv = card.querySelector(`.members-list`);
+            team.personas.forEach((p, pIdx) => {
+                const tag = document.createElement("span"); tag.className = "member-tag";
+                const spanName = document.createElement("span"); spanName.setAttribute("contenteditable","true"); spanName.classList.add("editable"); spanName.innerText = p;
+                spanName.addEventListener("blur", () => { team.personas[pIdx] = spanName.innerText; saveAll(); });
+                const rem = document.createElement("button"); rem.innerText = "✖"; rem.className = "remove-item"; rem.onclick = () => { team.personas.splice(pIdx,1); saveAll(); renderEquipos(); };
+                tag.appendChild(spanName); tag.appendChild(rem); membersDiv.appendChild(tag);
+            });
+            const addBtn = card.querySelector(".add-member-btn"); const inp = card.querySelector(".add-input");
+            addBtn.onclick = () => { if(inp.value.trim()) { team.personas.push(inp.value.trim()); saveAll(); renderEquipos(); } };
+            container.appendChild(card);
+            card.querySelector(".remove-item").onclick = () => { programData.equiposTrabajo.splice(idx,1); saveAll(); renderEquipos(); };
+        });
+    }
+
+    function renderIntercesoresVertical() {
+        const container = document.getElementById("intercesoresList");
+        container.innerHTML = "";
+        programData.intercesores.forEach((item, idx) => {
+            const div = document.createElement("div"); div.className = "intercesor-item-vertical";
+            div.innerHTML = `<div class="intercesor-info"><strong contenteditable="true" class="editable">${item.dia}</strong> 
+            <span contenteditable="true" class="editable">⏰ ${item.horario}</span> 
+            <span contenteditable="true" class="editable">👥 ${item.grupo}</span> 
+            <span contenteditable="true" class="editable">🙋 ${item.responsable}</span></div>
+            <button class="remove-item">✖ Eliminar</button>`;
+            const editableSpans = div.querySelectorAll("[contenteditable]");
+            editableSpans.forEach(span => { span.addEventListener("blur", () => { item[span.innerText.includes("⏰") ? "horario" : (span.innerText.includes("👥") ? "grupo" : (span.innerText.includes("🙋") ? "responsable" : "dia"))] = span.innerText.replace(/⏰|👥|🙋/g, '').trim(); saveAll(); }); });
+            div.querySelector(".remove-item").onclick = () => { programData.intercesores.splice(idx,1); saveAll(); renderIntercesoresVertical(); };
+            container.appendChild(div);
+        });
+    }
+
+    function renderServidoresCharla() {
+        const container = document.getElementById("servidoresPorCharlaContainer");
+        container.innerHTML = "";
+        programData.servidoresPorCharla.forEach((item, idx) => {
+            const card = document.createElement("div"); card.className = "charla-serv-card";
+            card.innerHTML = `<div><strong contenteditable="true" class="editable" style="font-size:1.1rem;">${item.charla}</strong></div>
+            <div style="margin-top:8px;">🎧 Servidores: <span contenteditable="true" class="editable">${item.servidores}</span></div>
+            <button class="remove-item" style="margin-top:6px;">Eliminar</button>`;
+            const titleSpan = card.querySelector("strong");
+            const servSpan = card.querySelectorAll(".editable")[1];
+            titleSpan.addEventListener("blur", () => { item.charla = titleSpan.innerText; saveAll(); });
+            servSpan.addEventListener("blur", () => { item.servidores = servSpan.innerText; saveAll(); });
+            card.querySelector(".remove-item").onclick = () => { programData.servidoresPorCharla.splice(idx,1); saveAll(); renderServidoresCharla(); };
+            container.appendChild(card);
+        });
+    }
+
+    function renderCreative() {
+        const container = document.getElementById("creativeContainer");
+        container.innerHTML = "";
+        programData.creativeItems.forEach((item, idx) => {
+            const card = document.createElement("div"); card.style.background = "#fef7e8"; card.style.borderRadius = "20px"; card.style.padding = "16px"; card.style.marginBottom = "14px";
+            card.innerHTML = `<div><strong contenteditable="true" class="editable" style="font-size:1rem;">${item.drama}</strong></div>
+            <div>👥 <span contenteditable="true" class="editable">${item.responsables}</span></div>
+            <div>🎬 <span contenteditable="true" class="editable">${item.recursos}</span></div>
+            <button class="remove-item">Eliminar</button>`;
+            const fields = card.querySelectorAll(".editable");
+            fields[0].addEventListener("blur", () => { item.drama = fields[0].innerText; saveAll(); });
+            fields[1].addEventListener("blur", () => { item.responsables = fields[1].innerText; saveAll(); });
+            fields[2].addEventListener("blur", () => { item.recursos = fields[2].innerText; saveAll(); });
+            card.querySelector(".remove-item").onclick = () => { programData.creativeItems.splice(idx,1); saveAll(); renderCreative(); };
+            container.appendChild(card);
+        });
+    }
+
+    // BOTONES AGREGAR
+    document.getElementById("addTeamAreaBtn")?.addEventListener("click", () => { programData.equiposTrabajo.push({ area: "Nuevo equipo", personas: ["Responsable"] }); saveAll(); renderEquipos(); });
+    document.getElementById("addIntercesorBtn")?.addEventListener("click", () => { programData.intercesores.push({ dia: "Nuevo día", horario: "00:00", grupo: "Grupo", responsable: "Nombre" }); saveAll(); renderIntercesoresVertical(); });
+    document.getElementById("addServidorCharlaBtn")?.addEventListener("click", () => { programData.servidoresPorCharla.push({ charla: "Nueva charla", servidores: "Asignar servidores" }); saveAll(); renderServidoresCharla(); });
+    document.getElementById("addCreativeItemBtn")?.addEventListener("click", () => { programData.creativeItems.push({ drama: "Nuevo drama", responsables: "Encargados", recursos: "Recursos" }); saveAll(); renderCreative(); });
+
+    // TABS
+    const btns = document.querySelectorAll(".tab-btn");
+    const panes = document.querySelectorAll(".tab-pane");
+    btns.forEach(btn => { btn.addEventListener("click", () => { const tabId = btn.getAttribute("data-tab"); btns.forEach(b=>b.classList.remove("active")); btn.classList.add("active"); panes.forEach(p=>p.classList.remove("active-pane")); document.getElementById(tabId).classList.add("active-pane"); renderAll(); }); });
+    loadFromStorage();
+</script>
+</body>
+</html>
