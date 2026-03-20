@@ -3,16 +3,73 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Encuentro Cara a Cara - Edición Colaborativa</title>
+    <title>Encuentro Cara a Cara con Dios</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <style>
-        * { box-sizing: border-box; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
-            font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+            font-family: 'Segoe UI', system-ui, sans-serif;
             background: linear-gradient(135deg, #f0f4f8 0%, #e6edf4 100%);
-            margin: 0;
-            padding: 24px;
-            color: #1a2c3e;
+            min-height: 100vh;
+        }
+        
+        /* Pantalla de login */
+        .login-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #1e466e, #2c6288);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            transition: 0.3s;
+        }
+        .login-box {
+            background: white;
+            padding: 40px;
+            border-radius: 32px;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.3);
+            text-align: center;
+            width: 320px;
+        }
+        .login-box h2 {
+            color: #1e466e;
+            margin-bottom: 24px;
+        }
+        .login-box input {
+            width: 100%;
+            padding: 14px;
+            margin: 12px 0;
+            border: 2px solid #e2edf2;
+            border-radius: 40px;
+            font-size: 1rem;
+            text-align: center;
+        }
+        .login-box button {
+            background: #1e466e;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            font-size: 1rem;
+        }
+        .login-box button:hover { background: #2c6288; }
+        .error-msg {
+            color: #e74c3c;
+            margin-top: 12px;
+            font-size: 0.85rem;
+        }
+        
+        /* Contenido principal */
+        .main-content {
+            display: none;
         }
         .container {
             max-width: 1400px;
@@ -34,9 +91,30 @@
             color: #4a6f8f;
             border-left: 4px solid #f3b33d;
             padding-left: 18px;
-            margin: 8px 0 28px;
+            margin: 8px 0 20px;
             font-weight: 500;
         }
+        .toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin: 16px 0 20px;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .btn-pdf {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 40px;
+            cursor: pointer;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-pdf:hover { background: #c0392b; }
         .tabs {
             display: flex;
             flex-wrap: wrap;
@@ -81,7 +159,7 @@
             margin: 16px 0;
             transition: 0.15s;
         }
-        .btn-save:hover { background: #2c6288; transform: scale(1.02); }
+        .btn-save:hover { background: #2c6288; }
         .btn-secondary {
             background: #f3b33d;
             color: #1e466e;
@@ -117,14 +195,6 @@
             color: #2c6288;
             font-size: 1.2rem;
         }
-        .error-box {
-            background: #fee;
-            border-left: 5px solid #e74c3c;
-            padding: 20px;
-            margin: 20px;
-            border-radius: 12px;
-            color: #c0392b;
-        }
         .intercesor-card, .charla-card, .creative-card, .equipo-card {
             background: #fafdff;
             border-radius: 20px;
@@ -140,13 +210,38 @@
             border-top: 1px solid #e2edf2;
             padding-top: 24px;
         }
+        @media print {
+            .toolbar, .tabs, .btn-save, footer, .btn-pdf { display: none; }
+            .tab-pane { display: block !important; }
+            body { background: white; padding: 0; margin: 0; }
+            .container { box-shadow: none; padding: 10px; }
+            .editable { background: white; border: none; }
+        }
         @media (max-width: 720px) { .container { padding: 16px; } td, th { font-size: 0.7rem; } }
     </style>
 </head>
 <body>
+
+<!-- Pantalla de Login -->
+<div id="loginContainer" class="login-container">
+    <div class="login-box">
+        <h2>🔐 Acceso al Programa</h2>
+        <input type="password" id="passwordInput" placeholder="Contraseña" autofocus>
+        <button onclick="verificarPassword()">Ingresar</button>
+        <div id="loginError" class="error-msg"></div>
+    </div>
+</div>
+
+<!-- Contenido Principal -->
+<div id="mainContent" class="main-content">
 <div class="container">
-    <h1>✨ ENCUENTRO CARA A CARA CON DIOS <small>“Salvos por su Gracia” · 27-29 Marzo 2026</small></h1>
-    <div class="sub">📡 MODO COLABORATIVO · Los cambios se guardan en la nube y TODOS los ven · Edita y presiona "Guardar"</div>
+    <div class="toolbar">
+        <div>
+            <h1>✨ ENCUENTRO CARA A CARA CON DIOS <small>“Salvos por su Gracia” · 27-29 Marzo 2026</small></h1>
+            <div class="sub">📡 MODO COLABORATIVO · Los cambios se guardan en la nube y TODOS los ven · Edita y presiona "Guardar"</div>
+        </div>
+        <button class="btn-pdf" onclick="exportarPDF()">📄 Exportar a PDF</button>
+    </div>
 
     <div class="tabs">
         <button class="tab-btn active" data-tab="tab-crono">📅 Cronograma</button>
@@ -167,226 +262,44 @@
 
     <footer>✅ Todos los cambios se guardan en Supabase. Cuando presiones "Guardar", TODOS los usuarios verán la información actualizada.</footer>
 </div>
+</div>
 
 <script>
-    (function() {
-        // 🔑 TUS CLAVES DE SUPABASE
-        const SUPABASE_URL = "https://wheuagstrjeljahofgsm.supabase.co";
-        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndoZXVhZ3N0cmplbGphaG9mZ3NtIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NDAyMDYyMiwiZXhwIjoyMDg5NTk2NjIyfQ.QweB0jmknUDhOv2d7lFKmhcIEtHj7bkxyYR3CZWPMgY";
+    // ========== LOGIN ==========
+    function verificarPassword() {
+        const password = document.getElementById("passwordInput").value;
+        if (password === "encuentro") {
+            document.getElementById("loginContainer").style.display = "none";
+            document.getElementById("mainContent").style.display = "block";
+            iniciarApp();
+        } else {
+            document.getElementById("loginError").innerText = "❌ Contraseña incorrecta";
+        }
+    }
+    
+    // Permitir Enter en el campo de contraseña
+    document.getElementById("passwordInput")?.addEventListener("keypress", function(e) {
+        if (e.key === "Enter") verificarPassword();
+    });
+    
+    // ========== SUPABASE ==========
+    const SUPABASE_URL = "https://wheuagstrjeljahofgsm.supabase.co";
+    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndoZXVhZ3N0cmplbGphaG9mZ3NtIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NDAyMDYyMiwiZXhwIjoyMDg5NTk2NjIyfQ.QweB0jmknUDhOv2d7lFKmhcIEtHj7bkxyYR3CZWPMgY";
+    
+    let supabaseClient;
+    let currentData = {
+        cronograma: [],
+        intercesores: [],
+        servidores: [],
+        creative: [],
+        equipos: []
+    };
+    
+    function iniciarApp() {
+        supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        loadAllData();
         
-        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        
-        let currentData = {
-            cronograma: [],
-            intercesores: [],
-            servidores: [],
-            creative: [],
-            equipos: []
-        };
-
-        async function loadAllData() {
-            const loadingDiv = document.getElementById("loading-message");
-            const errorDiv = document.getElementById("error-message");
-            loadingDiv.style.display = "block";
-            errorDiv.style.display = "none";
-            
-            try {
-                // Probar conexión
-                const { error: testError } = await supabaseClient.from("cronograma").select("count", { count: "exact", head: true });
-                if (testError) {
-                    throw new Error(testError.message);
-                }
-                
-                const [cronoRes, interRes, servRes, creativeRes, equipRes] = await Promise.all([
-                    supabaseClient.from("cronograma").select("*").order("day_order", { ascending: true }),
-                    supabaseClient.from("intercesores").select("*"),
-                    supabaseClient.from("servidores_charla").select("*"),
-                    supabaseClient.from("creative_items").select("*"),
-                    supabaseClient.from("equipos_trabajo").select("*")
-                ]);
-                
-                if (!cronoRes.error && cronoRes.data) currentData.cronograma = cronoRes.data;
-                if (!interRes.error && interRes.data) currentData.intercesores = interRes.data;
-                if (!servRes.error && servRes.data) currentData.servidores = servRes.data;
-                if (!creativeRes.error && creativeRes.data) currentData.creative = creativeRes.data;
-                if (!equipRes.error && equipRes.data) currentData.equipos = equipRes.data;
-                
-                if (currentData.cronograma.length === 0) {
-                    loadingDiv.innerHTML = "⚠️ No hay datos. Ejecuta el SQL en Supabase (SQL Editor) para crear las tablas con los datos iniciales.";
-                    return;
-                }
-                
-            } catch(e) { 
-                console.error("Error:", e);
-                loadingDiv.style.display = "none";
-                errorDiv.style.display = "block";
-                errorDiv.innerHTML = `<div class="error-box">
-                    <strong>❌ Error de conexión con Supabase</strong><br>
-                    <strong>Mensaje:</strong> ${e.message}<br><br>
-                    <strong>Soluciones:</strong><br>
-                    1. Ejecuta el SQL en "SQL Editor" para crear las tablas<br>
-                    2. Asegúrate que las tablas existen en "Table Editor"<br>
-                    3. Verifica que la clave API sea correcta
-                </div>`;
-                return;
-            }
-            
-            loadingDiv.style.display = "none";
-            renderAll();
-        }
-
-        function renderAll() {
-            renderCronograma();
-            renderIntercesores();
-            renderServidores();
-            renderCreative();
-            renderEquipos();
-        }
-
-        function renderCronograma() {
-            const container = document.getElementById("crono-container");
-            if (!currentData.cronograma.length) { container.innerHTML = "<p>No hay datos. Ejecuta el SQL en Supabase.</p>"; return; }
-            
-            let html = `<div style="overflow-x:auto;">`;
-            html += `<table><thead><tr><th>Hora</th><th>Actividad</th><th>Detalles / Recursos</th><th>Responsable</th></tr></thead><tbody>`;
-            
-            currentData.cronograma.forEach((row) => {
-                const isDayHeader = row.time && (row.time.includes("VIERNES") || row.time.includes("SÁBADO") || row.time.includes("DOMINGO") || row.time.includes("INICIO") || row.time.includes("SEGUNDO") || row.time.includes("TERCER"));
-                if (isDayHeader) {
-                    html += `<tr class="day-header"><td colspan="4" style="text-align:center; font-weight:bold; background:#faeec2;">${escapeHtml(row.time || '')} ${escapeHtml(row.activity || '')}</td></tr>`;
-                } else {
-                    html += `<tr>
-                        <td class="editable" contenteditable="true" data-id="${row.id}" data-table="crono" data-field="time">${escapeHtml(row.time || '')}</td>
-                        <td class="editable" contenteditable="true" data-id="${row.id}" data-table="crono" data-field="activity">${escapeHtml(row.activity || '')}</td>
-                        <td class="editable" contenteditable="true" data-id="${row.id}" data-table="crono" data-field="details">${escapeHtml(row.details || '')}</td>
-                        <td class="editable" contenteditable="true" data-id="${row.id}" data-table="crono" data-field="responsible">${escapeHtml(row.responsible || '')}</td>
-                    </tr>`;
-                }
-            });
-            html += `</tbody></table></div><div><button class="btn-save" id="saveCronoBtn">💾 Guardar cambios del Cronograma</button><span class="save-status" id="cronoStatus"></span></div>`;
-            container.innerHTML = html;
-            document.getElementById("saveCronoBtn")?.addEventListener("click", () => saveTableData("crono", "cronoStatus"));
-        }
-
-        async function saveTableData(tableType, statusId) {
-            const statusSpan = document.getElementById(statusId);
-            if (statusSpan) { statusSpan.innerText = "Guardando..."; statusSpan.style.color = "#f3b33d"; }
-            
-            let tableName;
-            if (tableType === "crono") tableName = "cronograma";
-            else if (tableType === "inter") tableName = "intercesores";
-            else if (tableType === "serv") tableName = "servidores_charla";
-            else if (tableType === "creative") tableName = "creative_items";
-            else if (tableType === "equipos") tableName = "equipos_trabajo";
-            else return;
-            
-            const elements = document.querySelectorAll(`[data-table="${tableType}"]`);
-            const updates = {};
-            elements.forEach(el => {
-                const id = el.getAttribute("data-id");
-                const field = el.getAttribute("data-field");
-                if (!updates[id]) updates[id] = { id: parseInt(id) };
-                updates[id][field] = el.innerText;
-            });
-            
-            for (const key in updates) {
-                await supabaseClient.from(tableName).update(updates[key]).eq("id", updates[key].id);
-            }
-            
-            if (statusSpan) {
-                statusSpan.innerText = "✅ ¡Guardado! Todos verán los cambios.";
-                statusSpan.style.color = "#2c7a4d";
-                setTimeout(() => { statusSpan.innerText = ""; }, 3000);
-            }
-        }
-
-        function renderIntercesores() {
-            const container = document.getElementById("intercesores-container");
-            let html = `<div class="section-card"><div class="section-title">🕯️ Horarios de Intercesión <button class="btn-save" id="saveInterBtn">💾 Guardar todos</button></div>`;
-            if (currentData.intercesores.length === 0) {
-                html += `<p>No hay datos de intercesores.</p>`;
-            } else {
-                currentData.intercesores.forEach(item => {
-                    html += `<div class="intercesor-card">
-                        <div><strong contenteditable="true" class="editable" data-id="${item.id}" data-table="inter" data-field="dia">${escapeHtml(item.dia)}</strong></div>
-                        <div>⏰ <span contenteditable="true" class="editable" data-id="${item.id}" data-table="inter" data-field="horario">${escapeHtml(item.horario)}</span></div>
-                        <div>👥 <span contenteditable="true" class="editable" data-id="${item.id}" data-table="inter" data-field="grupo">${escapeHtml(item.grupo)}</span></div>
-                        <div>🙋 <span contenteditable="true" class="editable" data-id="${item.id}" data-table="inter" data-field="responsable">${escapeHtml(item.responsable)}</span></div>
-                    </div>`;
-                });
-            }
-            html += `<button class="btn-save btn-secondary" id="addInterBtn">+ Añadir nuevo turno</button></div>`;
-            container.innerHTML = html;
-            document.getElementById("saveInterBtn")?.addEventListener("click", () => saveTableData("inter", "cronoStatus"));
-            document.getElementById("addInterBtn")?.addEventListener("click", () => addItem("intercesores", { dia: "Nuevo día", horario: "00:00", grupo: "Nuevo grupo", responsable: "Nombre" }));
-        }
-
-        function renderServidores() {
-            const container = document.getElementById("servidores-container");
-            let html = `<div class="section-card"><div class="section-title">🎤 Servidores por Charla <button class="btn-save" id="saveServBtn">💾 Guardar todos</button></div>`;
-            if (currentData.servidores.length === 0) {
-                html += `<p>No hay datos de servidores.</p>`;
-            } else {
-                currentData.servidores.forEach(item => {
-                    html += `<div class="charla-card">
-                        <div><strong contenteditable="true" class="editable" data-id="${item.id}" data-table="serv" data-field="charla">${escapeHtml(item.charla)}</strong></div>
-                        <div>🎧 Servidores: <span contenteditable="true" class="editable" data-id="${item.id}" data-table="serv" data-field="servidores">${escapeHtml(item.servidores)}</span></div>
-                    </div>`;
-                });
-            }
-            html += `<button class="btn-save btn-secondary" id="addServBtn">+ Añadir charla</button></div>`;
-            container.innerHTML = html;
-            document.getElementById("saveServBtn")?.addEventListener("click", () => saveTableData("serv", "cronoStatus"));
-            document.getElementById("addServBtn")?.addEventListener("click", () => addItem("servidores_charla", { charla: "Nueva charla", servidores: "Asignar servidores" }));
-        }
-
-        function renderCreative() {
-            const container = document.getElementById("creative-container");
-            let html = `<div class="section-card"><div class="section-title">🎭 Creative - Dramas y Recursos <button class="btn-save" id="saveCreativeBtn">💾 Guardar todos</button></div>`;
-            if (currentData.creative.length === 0) {
-                html += `<p>No hay datos de Creative.</p>`;
-            } else {
-                currentData.creative.forEach(item => {
-                    html += `<div class="creative-card">
-                        <div><strong contenteditable="true" class="editable" data-id="${item.id}" data-table="creative" data-field="drama">${escapeHtml(item.drama)}</strong></div>
-                        <div>👥 <span contenteditable="true" class="editable" data-id="${item.id}" data-table="creative" data-field="responsables">${escapeHtml(item.responsables)}</span></div>
-                        <div>🎬 <span contenteditable="true" class="editable" data-id="${item.id}" data-table="creative" data-field="recursos">${escapeHtml(item.recursos)}</span></div>
-                    </div>`;
-                });
-            }
-            html += `<button class="btn-save btn-secondary" id="addCreativeBtn">+ Añadir drama/dinámica</button></div>`;
-            container.innerHTML = html;
-            document.getElementById("saveCreativeBtn")?.addEventListener("click", () => saveTableData("creative", "cronoStatus"));
-            document.getElementById("addCreativeBtn")?.addEventListener("click", () => addItem("creative_items", { drama: "Nuevo drama", responsables: "Encargados", recursos: "Recursos" }));
-        }
-
-        function renderEquipos() {
-            const container = document.getElementById("equipos-container");
-            let html = `<div class="section-card"><div class="section-title">👥 Equipos de Trabajo <button class="btn-save" id="saveEquipBtn">💾 Guardar todos</button></div>`;
-            if (currentData.equipos.length === 0) {
-                html += `<p>No hay datos de equipos.</p>`;
-            } else {
-                currentData.equipos.forEach(item => {
-                    let personasStr = Array.isArray(item.personas) ? item.personas.join(", ") : item.personas;
-                    html += `<div class="equipo-card">
-                        <div><strong contenteditable="true" class="editable" data-id="${item.id}" data-table="equipo" data-field="area">${escapeHtml(item.area)}</strong></div>
-                        <div>👥 <span contenteditable="true" class="editable" data-id="${item.id}" data-table="equipo" data-field="personas">${escapeHtml(personasStr)}</span></div>
-                    </div>`;
-                });
-            }
-            html += `<button class="btn-save btn-secondary" id="addEquipoBtn">+ Añadir equipo</button></div>`;
-            container.innerHTML = html;
-            document.getElementById("saveEquipBtn")?.addEventListener("click", () => saveTableData("equipos", "cronoStatus"));
-            document.getElementById("addEquipoBtn")?.addEventListener("click", () => addItem("equipos_trabajo", { area: "Nuevo equipo", personas: ["Responsable"] }));
-        }
-
-        async function addItem(table, defaultValues) {
-            await supabaseClient.from(table).insert(defaultValues);
-            loadAllData();
-        }
-
-        function escapeHtml(str) { if (!str) return ''; return str.replace(/[&<>]/g, function(m) { if (m === '&') return '&amp;'; if (m === '<') return '&lt;'; if (m === '>') return '&gt;'; return m; }); }
-
+        // Configurar tabs
         const btns = document.querySelectorAll(".tab-btn");
         const panes = document.querySelectorAll(".tab-pane");
         btns.forEach(btn => {
@@ -398,9 +311,205 @@
                 document.getElementById(tabId).classList.add("active-pane");
             });
         });
-
+    }
+    
+    async function loadAllData() {
+        const loadingDiv = document.getElementById("loading-message");
+        const errorDiv = document.getElementById("error-message");
+        loadingDiv.style.display = "block";
+        errorDiv.style.display = "none";
+        
+        try {
+            const [cronoRes, interRes, servRes, creativeRes, equipRes] = await Promise.all([
+                supabaseClient.from("cronograma").select("*").order("day_order", { ascending: true }),
+                supabaseClient.from("intercesores").select("*"),
+                supabaseClient.from("servidores_charla").select("*"),
+                supabaseClient.from("creative_items").select("*"),
+                supabaseClient.from("equipos_trabajo").select("*")
+            ]);
+            
+            if (!cronoRes.error && cronoRes.data) currentData.cronograma = cronoRes.data;
+            if (!interRes.error && interRes.data) currentData.intercesores = interRes.data;
+            if (!servRes.error && servRes.data) currentData.servidores = servRes.data;
+            if (!creativeRes.error && creativeRes.data) currentData.creative = creativeRes.data;
+            if (!equipRes.error && equipRes.data) currentData.equipos = equipRes.data;
+            
+            if (currentData.cronograma.length === 0) {
+                loadingDiv.innerHTML = "⚠️ No hay datos. Ejecuta el SQL en Supabase.";
+                return;
+            }
+        } catch(e) {
+            loadingDiv.style.display = "none";
+            errorDiv.style.display = "block";
+            errorDiv.innerHTML = `<div style="background:#fee;border-left:5px solid #e74c3c;padding:20px;">❌ Error: ${e.message}</div>`;
+            return;
+        }
+        
+        loadingDiv.style.display = "none";
+        renderAll();
+    }
+    
+    function renderAll() {
+        renderCronograma();
+        renderIntercesores();
+        renderServidores();
+        renderCreative();
+        renderEquipos();
+    }
+    
+    function renderCronograma() {
+        const container = document.getElementById("crono-container");
+        if (!currentData.cronograma.length) { container.innerHTML = "<p>No hay datos</p>"; return; }
+        
+        let html = `<div style="overflow-x:auto;"><table><thead><tr><th>Hora</th><th>Actividad</th><th>Detalles / Recursos</th><th>Responsable</th></tr></thead><tbody>`;
+        currentData.cronograma.forEach((row) => {
+            const isDayHeader = row.time && (row.time.includes("VIERNES") || row.time.includes("SÁBADO") || row.time.includes("DOMINGO") || row.time.includes("INICIO") || row.time.includes("SEGUNDO") || row.time.includes("TERCER"));
+            if (isDayHeader) {
+                html += `<tr style="background:#faeec2;"><td colspan="4" style="text-align:center; font-weight:bold;">${escapeHtml(row.time || '')} ${escapeHtml(row.activity || '')}</td></tr>`;
+            } else {
+                html += `<tr>
+                    <td class="editable" contenteditable="true" data-id="${row.id}" data-table="crono" data-field="time">${escapeHtml(row.time || '')}</td>
+                    <td class="editable" contenteditable="true" data-id="${row.id}" data-table="crono" data-field="activity">${escapeHtml(row.activity || '')}</td>
+                    <td class="editable" contenteditable="true" data-id="${row.id}" data-table="crono" data-field="details">${escapeHtml(row.details || '')}</td>
+                    <td class="editable" contenteditable="true" data-id="${row.id}" data-table="crono" data-field="responsible">${escapeHtml(row.responsible || '')}</td>
+                </tr>`;
+            }
+        });
+        html += `</tbody></table></div><div><button class="btn-save" id="saveCronoBtn">💾 Guardar cambios del Cronograma</button><span class="save-status" id="cronoStatus"></span></div>`;
+        container.innerHTML = html;
+        document.getElementById("saveCronoBtn")?.addEventListener("click", () => saveTableData("crono", "cronoStatus"));
+    }
+    
+    async function saveTableData(tableType, statusId) {
+        const statusSpan = document.getElementById(statusId);
+        if (statusSpan) { statusSpan.innerText = "Guardando..."; statusSpan.style.color = "#f3b33d"; }
+        
+        let tableName;
+        if (tableType === "crono") tableName = "cronograma";
+        else if (tableType === "inter") tableName = "intercesores";
+        else if (tableType === "serv") tableName = "servidores_charla";
+        else if (tableType === "creative") tableName = "creative_items";
+        else if (tableType === "equipos") tableName = "equipos_trabajo";
+        else return;
+        
+        const elements = document.querySelectorAll(`[data-table="${tableType}"]`);
+        const updates = {};
+        elements.forEach(el => {
+            const id = el.getAttribute("data-id");
+            const field = el.getAttribute("data-field");
+            if (!updates[id]) updates[id] = { id: parseInt(id) };
+            updates[id][field] = el.innerText;
+        });
+        
+        for (const key in updates) {
+            await supabaseClient.from(tableName).update(updates[key]).eq("id", updates[key].id);
+        }
+        
+        if (statusSpan) {
+            statusSpan.innerText = "✅ ¡Guardado! Todos verán los cambios.";
+            statusSpan.style.color = "#2c7a4d";
+            setTimeout(() => { statusSpan.innerText = ""; }, 3000);
+        }
+    }
+    
+    function renderIntercesores() {
+        const container = document.getElementById("intercesores-container");
+        let html = `<div class="section-card"><div class="section-title">🕯️ Horarios de Intercesión <button class="btn-save" id="saveInterBtn">💾 Guardar todos</button></div>`;
+        if (currentData.intercesores.length === 0) {
+            html += `<p>No hay datos de intercesores.</p>`;
+        } else {
+            currentData.intercesores.forEach(item => {
+                html += `<div class="intercesor-card">
+                    <div><strong contenteditable="true" class="editable" data-id="${item.id}" data-table="inter" data-field="dia">${escapeHtml(item.dia)}</strong></div>
+                    <div>⏰ <span contenteditable="true" class="editable" data-id="${item.id}" data-table="inter" data-field="horario">${escapeHtml(item.horario)}</span></div>
+                    <div>👥 <span contenteditable="true" class="editable" data-id="${item.id}" data-table="inter" data-field="grupo">${escapeHtml(item.grupo)}</span></div>
+                    <div>🙋 <span contenteditable="true" class="editable" data-id="${item.id}" data-table="inter" data-field="responsable">${escapeHtml(item.responsable)}</span></div>
+                </div>`;
+            });
+        }
+        html += `<button class="btn-save btn-secondary" id="addInterBtn">+ Añadir nuevo turno</button></div>`;
+        container.innerHTML = html;
+        document.getElementById("saveInterBtn")?.addEventListener("click", () => saveTableData("inter", "cronoStatus"));
+        document.getElementById("addInterBtn")?.addEventListener("click", () => addItem("intercesores", { dia: "Nuevo día", horario: "00:00", grupo: "Nuevo grupo", responsable: "Nombre" }));
+    }
+    
+    function renderServidores() {
+        const container = document.getElementById("servidores-container");
+        let html = `<div class="section-card"><div class="section-title">🎤 Servidores por Charla <button class="btn-save" id="saveServBtn">💾 Guardar todos</button></div>`;
+        if (currentData.servidores.length === 0) {
+            html += `<p>No hay datos de servidores.</p>`;
+        } else {
+            currentData.servidores.forEach(item => {
+                html += `<div class="charla-card">
+                    <div><strong contenteditable="true" class="editable" data-id="${item.id}" data-table="serv" data-field="charla">${escapeHtml(item.charla)}</strong></div>
+                    <div>🎧 Servidores: <span contenteditable="true" class="editable" data-id="${item.id}" data-table="serv" data-field="servidores">${escapeHtml(item.servidores)}</span></div>
+                </div>`;
+            });
+        }
+        html += `<button class="btn-save btn-secondary" id="addServBtn">+ Añadir charla</button></div>`;
+        container.innerHTML = html;
+        document.getElementById("saveServBtn")?.addEventListener("click", () => saveTableData("serv", "cronoStatus"));
+        document.getElementById("addServBtn")?.addEventListener("click", () => addItem("servidores_charla", { charla: "Nueva charla", servidores: "Asignar servidores" }));
+    }
+    
+    function renderCreative() {
+        const container = document.getElementById("creative-container");
+        let html = `<div class="section-card"><div class="section-title">🎭 Creative - Dramas y Recursos <button class="btn-save" id="saveCreativeBtn">💾 Guardar todos</button></div>`;
+        if (currentData.creative.length === 0) {
+            html += `<p>No hay datos de Creative.</p>`;
+        } else {
+            currentData.creative.forEach(item => {
+                html += `<div class="creative-card">
+                    <div><strong contenteditable="true" class="editable" data-id="${item.id}" data-table="creative" data-field="drama">${escapeHtml(item.drama)}</strong></div>
+                    <div>👥 <span contenteditable="true" class="editable" data-id="${item.id}" data-table="creative" data-field="responsables">${escapeHtml(item.responsables)}</span></div>
+                    <div>🎬 <span contenteditable="true" class="editable" data-id="${item.id}" data-table="creative" data-field="recursos">${escapeHtml(item.recursos)}</span></div>
+                </div>`;
+            });
+        }
+        html += `<button class="btn-save btn-secondary" id="addCreativeBtn">+ Añadir drama/dinámica</button></div>`;
+        container.innerHTML = html;
+        document.getElementById("saveCreativeBtn")?.addEventListener("click", () => saveTableData("creative", "cronoStatus"));
+        document.getElementById("addCreativeBtn")?.addEventListener("click", () => addItem("creative_items", { drama: "Nuevo drama", responsables: "Encargados", recursos: "Recursos" }));
+    }
+    
+    function renderEquipos() {
+        const container = document.getElementById("equipos-container");
+        let html = `<div class="section-card"><div class="section-title">👥 Equipos de Trabajo <button class="btn-save" id="saveEquipBtn">💾 Guardar todos</button></div>`;
+        if (currentData.equipos.length === 0) {
+            html += `<p>No hay datos de equipos.</p>`;
+        } else {
+            currentData.equipos.forEach(item => {
+                let personasStr = Array.isArray(item.personas) ? item.personas.join(", ") : item.personas;
+                html += `<div class="equipo-card">
+                    <div><strong contenteditable="true" class="editable" data-id="${item.id}" data-table="equipo" data-field="area">${escapeHtml(item.area)}</strong></div>
+                    <div>👥 <span contenteditable="true" class="editable" data-id="${item.id}" data-table="equipo" data-field="personas">${escapeHtml(personasStr)}</span></div>
+                </div>`;
+            });
+        }
+        html += `<button class="btn-save btn-secondary" id="addEquipoBtn">+ Añadir equipo</button></div>`;
+        container.innerHTML = html;
+        document.getElementById("saveEquipBtn")?.addEventListener("click", () => saveTableData("equipos", "cronoStatus"));
+        document.getElementById("addEquipoBtn")?.addEventListener("click", () => addItem("equipos_trabajo", { area: "Nuevo equipo", personas: ["Responsable"] }));
+    }
+    
+    async function addItem(table, defaultValues) {
+        await supabaseClient.from(table).insert(defaultValues);
         loadAllData();
-    })();
+    }
+    
+    function escapeHtml(str) { if (!str) return ''; return str.replace(/[&<>]/g, function(m) { if (m === '&') return '&amp;'; if (m === '<') return '&lt;'; if (m === '>') return '&gt;'; return m; }); }
+    
+    function exportarPDF() {
+        const element = document.querySelector(".container");
+        const opt = {
+            margin: [0.5, 0.5, 0.5, 0.5],
+            filename: `Encuentro_${new Date().toISOString().slice(0,10)}.pdf`,
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2, letterRendering: true },
+            jsPDF: { unit: 'in', format: 'a4', orientation: 'landscape' }
+        };
+        html2pdf().set(opt).from(element).save();
+    }
 </script>
 </body>
 </html>
