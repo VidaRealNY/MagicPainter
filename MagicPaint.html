@@ -1,0 +1,936 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="description" content="Magic Painting — Interior & Exterior painting services in Hudson Valley NY. Staining, Wallpaper Removal, Sheet Rock, Trimwork & Power Washing.">
+    <meta name="theme-color" content="#FEFAF3">
+    <title>Magic Painting | Interior & Exterior | Hudson Valley NY</title>
+
+    <!-- Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        :root {
+            --cream: #FEFAF3;
+            --warm-white: #FFFBF5;
+            --white: #FFFFFF;
+            --deep-green: #1E2E28;
+            --forest: #2B4E3A;
+            --medium-green: #2C5A48;
+            --burnt-orange: #D97A2B;
+            --burnt-orange-hover: #B85F1E;
+            --soft-gold: #E6CBA0;
+            --pale-gold: #ECDBC0;
+            --warm-beige: #F0E4D6;
+            --light-beige: #F5EDE2;
+            --oatmeal: #DDD0BE;
+            --dusty-green: #5F6F68;
+            --muted-taupe: #7E6548;
+            --footer-text: #CFCFC4;
+            --border-soft: #F3E7DB;
+            --border-light: #F0E2D0;
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
+            --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 16px 36px rgba(0, 0, 0, 0.08);
+            --shadow-xl: 0 20px 40px -12px rgba(0, 0, 0, 0.12);
+            --radius-sm: 12px;
+            --radius-md: 20px;
+            --radius-lg: 28px;
+            --radius-xl: 40px;
+            --radius-2xl: 48px;
+            --radius-pill: 60px;
+            --transition-fast: 0.2s ease;
+            --transition-smooth: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --max-width: 1280px;
+        }
+
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            -webkit-text-size-adjust: 100%;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--cream);
+            color: var(--deep-green);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            overflow-x: hidden;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        /* ── Container ─────────────────────── */
+        .container {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: 0 clamp(16px, 3vw, 28px);
+        }
+
+        /* ── Navbar ───────────────────────── */
+        .navbar {
+            background: var(--white);
+            box-shadow: var(--shadow-sm);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid var(--border-light);
+            -webkit-backdrop-filter: blur(6px);
+            backdrop-filter: blur(6px);
+            background: rgba(255, 255, 255, 0.97);
+        }
+        .nav-flex {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.85rem 0;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+        .logo-group {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        .logo-group h1 {
+            font-size: clamp(1.4rem, 3.5vw, 1.9rem);
+            font-weight: 800;
+            letter-spacing: -0.3px;
+            background: linear-gradient(135deg, #276749 0%, #D97A2B 100%);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            line-height: 1.1;
+        }
+        .logo-group span {
+            font-size: clamp(0.7rem, 1.4vw, 0.85rem);
+            color: var(--dusty-green);
+            font-weight: 500;
+            letter-spacing: 0.2px;
+        }
+        .contact-info-header {
+            display: flex;
+            gap: clamp(0.6rem, 1.5vw, 1.5rem);
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .contact-info-header a {
+            text-decoration: none;
+            color: #2D4A3C;
+            font-weight: 500;
+            font-size: clamp(0.8rem, 1.5vw, 0.9rem);
+            transition: color var(--transition-fast);
+            white-space: nowrap;
+        }
+        .contact-info-header a:hover {
+            color: var(--burnt-orange);
+        }
+        .contact-info-header a i {
+            margin-right: 5px;
+            color: var(--burnt-orange);
+            font-size: 0.85em;
+        }
+        .pill-badge {
+            background: var(--warm-beige);
+            padding: 6px 14px;
+            border-radius: var(--radius-pill);
+            font-size: clamp(0.7rem, 1.3vw, 0.8rem);
+            font-weight: 600;
+            white-space: nowrap;
+            letter-spacing: 0.1px;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            color: #3D5A45;
+        }
+        .pill-badge i {
+            color: var(--burnt-orange);
+            font-size: 0.8em;
+        }
+        .btn-primary {
+            background: var(--burnt-orange);
+            padding: clamp(10px, 1.5vw, 12px) clamp(20px, 3vw, 28px);
+            border-radius: var(--radius-xl);
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all var(--transition-smooth);
+            border: none;
+            cursor: pointer;
+            white-space: nowrap;
+            font-size: clamp(0.85rem, 1.4vw, 0.95rem);
+            letter-spacing: 0.1px;
+            box-shadow: 0 4px 14px rgba(217, 122, 43, 0.25);
+        }
+        .btn-primary:hover {
+            background: var(--burnt-orange-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(217, 122, 43, 0.35);
+        }
+        .btn-primary:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 8px rgba(217, 122, 43, 0.3);
+        }
+
+        /* ── Hero ─────────────────────────── */
+        .hero {
+            padding: clamp(1.5rem, 3vw, 3rem) 0 clamp(0.5rem, 1.5vw, 1rem);
+        }
+        .hero-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: clamp(1.5rem, 4vw, 3rem);
+            align-items: center;
+        }
+        .hero-text {
+            flex: 1 1 340px;
+            min-width: 0;
+        }
+        .hero-badge {
+            background: #EEDFCB;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 7px 18px;
+            border-radius: var(--radius-pill);
+            font-weight: 600;
+            font-size: clamp(0.72rem, 1.2vw, 0.8rem);
+            margin-bottom: 1rem;
+            letter-spacing: 0.2px;
+            color: #4A3C2C;
+        }
+        .hero-badge i {
+            color: var(--burnt-orange);
+        }
+        .hero-text h2 {
+            font-size: clamp(1.7rem, 5vw, 2.8rem);
+            font-weight: 800;
+            color: var(--forest);
+            line-height: 1.15;
+            letter-spacing: -0.5px;
+        }
+        .hero-text p {
+            margin: 0.9rem 0 1.5rem;
+            font-size: clamp(0.9rem, 1.6vw, 1.05rem);
+            color: #3D5246;
+            max-width: 500px;
+        }
+        .hero-image {
+            flex: 1 1 340px;
+            min-height: clamp(240px, 40vw, 380px);
+            background: #E2D5C2;
+            border-radius: var(--radius-lg);
+            background-size: cover;
+            background-position: center;
+            box-shadow: var(--shadow-xl);
+            display: flex;
+            align-items: flex-end;
+            justify-content: flex-start;
+            padding: 14px;
+            position: relative;
+            overflow: hidden;
+            transition: transform var(--transition-smooth);
+        }
+        .hero-image:hover {
+            transform: scale(1.01);
+        }
+        .hero-image::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, transparent 55%, rgba(0, 0, 0, 0.35) 100%);
+            border-radius: var(--radius-lg);
+            pointer-events: none;
+        }
+        .img-placeholder-tag {
+            background: rgba(0, 0, 0, 0.65);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            padding: 7px 16px;
+            border-radius: var(--radius-pill);
+            color: white;
+            font-size: 0.75rem;
+            font-weight: 500;
+            z-index: 2;
+            letter-spacing: 0.2px;
+        }
+
+        /* ── Section Title ────────────────── */
+        .section-title {
+            text-align: center;
+            font-size: clamp(1.5rem, 3.5vw, 2rem);
+            font-weight: 700;
+            margin: clamp(2rem, 4vw, 3rem) 0 clamp(1rem, 2vw, 1.5rem);
+            color: var(--forest);
+            letter-spacing: -0.3px;
+        }
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 60px;
+            height: 3px;
+            background: var(--burnt-orange);
+            margin: 12px auto 0;
+            border-radius: 4px;
+        }
+
+        /* ── Services Grid ────────────────── */
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(clamp(180px, 22vw, 230px), 1fr));
+            gap: clamp(1rem, 2.5vw, 1.8rem);
+            margin: 2rem 0;
+        }
+        .service-card {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            padding: clamp(1.3rem, 2.5vw, 1.8rem) clamp(0.8rem, 1.5vw, 1rem);
+            text-align: center;
+            transition: all var(--transition-smooth);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-soft);
+            cursor: default;
+        }
+        .service-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+            border-color: transparent;
+        }
+        .service-card i {
+            font-size: clamp(1.8rem, 3vw, 2.4rem);
+            color: var(--burnt-orange);
+            margin-bottom: 0.7rem;
+            transition: transform var(--transition-smooth);
+        }
+        .service-card:hover i {
+            transform: scale(1.1);
+        }
+        .service-card h3 {
+            font-size: clamp(1rem, 1.7vw, 1.3rem);
+            font-weight: 700;
+            margin-bottom: 0.35rem;
+            color: var(--forest);
+        }
+        .service-card p {
+            font-size: clamp(0.8rem, 1.2vw, 0.9rem);
+            color: var(--dusty-green);
+        }
+
+        /* ── Counties Section ─────────────── */
+        .counties-section {
+            background: #FAF4EA;
+            padding: clamp(2rem, 4vw, 3.5rem) 0;
+            border-radius: var(--radius-2xl);
+            margin: clamp(1.5rem, 3vw, 2.5rem) 0;
+        }
+        .county-flex {
+            display: flex;
+            flex-wrap: wrap;
+            gap: clamp(1rem, 2.5vw, 2rem);
+            justify-content: center;
+        }
+        .county-card {
+            background: var(--white);
+            border-radius: var(--radius-xl);
+            padding: clamp(1.3rem, 2.5vw, 1.8rem);
+            flex: 1 1 240px;
+            min-width: 220px;
+            max-width: 380px;
+            box-shadow: var(--shadow-md);
+            border-bottom: 4px solid var(--soft-gold);
+            transition: transform var(--transition-smooth), box-shadow var(--transition-smooth);
+        }
+        .county-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-lg);
+        }
+        .county-card h3 {
+            font-size: clamp(1.2rem, 2vw, 1.6rem);
+            font-weight: 700;
+            color: var(--medium-green);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .county-card h3 i {
+            color: var(--burnt-orange);
+            font-size: 0.85em;
+        }
+        .city-list {
+            list-style: none;
+        }
+        .city-list li {
+            padding: 7px 0;
+            border-bottom: 1px dashed var(--pale-gold);
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            font-size: clamp(0.85rem, 1.3vw, 0.95rem);
+            transition: padding-left var(--transition-fast);
+        }
+        .city-list li:hover {
+            padding-left: 4px;
+        }
+        .city-list li i {
+            color: var(--burnt-orange);
+            width: 18px;
+            text-align: center;
+            font-size: 0.8em;
+            flex-shrink: 0;
+        }
+
+        /* ── Gallery ──────────────────────── */
+        .gallery-section {
+            margin: clamp(2rem, 4vw, 3.5rem) 0;
+        }
+        .image-gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(clamp(200px, 28vw, 260px), 1fr));
+            gap: clamp(14px, 2.5vw, 24px);
+            margin: 2rem 0;
+        }
+        .gallery-card {
+            background: var(--light-beige);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+            transition: all var(--transition-smooth);
+            display: flex;
+            flex-direction: column;
+        }
+        .gallery-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-xl);
+        }
+        .gallery-img {
+            width: 100%;
+            aspect-ratio: 4 / 3;
+            background-color: var(--oatmeal);
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 8px;
+            color: var(--muted-taupe);
+            font-weight: 500;
+            font-size: 0.85rem;
+            position: relative;
+            overflow: hidden;
+        }
+        .gallery-img::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0);
+            transition: background var(--transition-smooth);
+            z-index: 1;
+        }
+        .gallery-card:hover .gallery-img::before {
+            background: rgba(0, 0, 0, 0.08);
+        }
+        .gallery-caption {
+            padding: clamp(10px, 1.5vw, 14px);
+            text-align: center;
+            background: var(--white);
+            font-weight: 500;
+            font-size: clamp(0.8rem, 1.2vw, 0.9rem);
+            letter-spacing: 0.1px;
+            flex-shrink: 0;
+        }
+        .upload-note {
+            background: #FFF3E8;
+            padding: 0.9rem 1.2rem;
+            border-radius: var(--radius-pill);
+            text-align: center;
+            margin: 1rem 0;
+            font-size: clamp(0.78rem, 1.1vw, 0.85rem);
+            color: #A57646;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* ── Profile / Contact Card ───────── */
+        .profile-card {
+            background: linear-gradient(115deg, var(--white), #FEF7ED);
+            border-radius: var(--radius-xl);
+            padding: clamp(1.5rem, 3vw, 2.5rem);
+            display: flex;
+            flex-wrap: wrap;
+            gap: clamp(1.2rem, 2.5vw, 2rem);
+            align-items: center;
+            justify-content: space-between;
+            margin: clamp(1.5rem, 3vw, 2.5rem) 0;
+            box-shadow: var(--shadow-md);
+            border: 1px solid rgba(230, 203, 160, 0.3);
+        }
+        .profile-card h3 {
+            font-size: clamp(1.1rem, 1.8vw, 1.35rem);
+            font-weight: 700;
+            color: var(--forest);
+            margin-bottom: 4px;
+        }
+        .profile-card p {
+            font-size: clamp(0.85rem, 1.3vw, 0.95rem);
+            color: #3D5246;
+            margin: 6px 0;
+        }
+        .profile-card .pill-badge {
+            margin: 3px 4px;
+        }
+        .name-highlight {
+            font-weight: 700;
+            color: var(--burnt-orange);
+        }
+        .contact-buttons {
+            display: flex;
+            gap: clamp(10px, 2vw, 16px);
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .btn-secondary {
+            background: var(--medium-green);
+            padding: clamp(10px, 1.5vw, 12px) clamp(18px, 2.5vw, 24px);
+            border-radius: var(--radius-xl);
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all var(--transition-smooth);
+            white-space: nowrap;
+            font-size: clamp(0.85rem, 1.4vw, 0.95rem);
+            letter-spacing: 0.1px;
+            box-shadow: 0 4px 14px rgba(44, 90, 72, 0.2);
+        }
+        .btn-secondary:hover {
+            background: #1F4233;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(44, 90, 72, 0.3);
+        }
+        .btn-secondary:active {
+            transform: translateY(0);
+        }
+
+        /* ── Footer ───────────────────────── */
+        footer {
+            background: var(--deep-green);
+            color: var(--footer-text);
+            text-align: center;
+            padding: clamp(1.5rem, 3vw, 2.5rem) clamp(1rem, 3vw, 2rem);
+            border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+            margin-top: clamp(2rem, 4vw, 3.5rem);
+            font-size: clamp(0.8rem, 1.2vw, 0.9rem);
+        }
+        footer p {
+            margin: 6px 0;
+        }
+        footer i {
+            color: var(--burnt-orange);
+            margin-right: 4px;
+        }
+
+        /* ── Responsive Breakpoints ───────── */
+        @media (max-width: 900px) {
+            .hero-grid {
+                gap: 1.5rem;
+            }
+            .hero-image {
+                min-height: 260px;
+            }
+            .county-flex {
+                gap: 1rem;
+            }
+            .county-card {
+                flex: 1 1 200px;
+                min-width: 180px;
+            }
+        }
+
+        @media (max-width: 750px) {
+            .nav-flex {
+                flex-direction: column;
+                text-align: center;
+                gap: 0.6rem;
+            }
+            .logo-group {
+                align-items: center;
+            }
+            .contact-info-header {
+                justify-content: center;
+                gap: 0.6rem;
+            }
+            .hero-text h2 {
+                font-size: 1.6rem;
+            }
+            .hero-text {
+                text-align: center;
+            }
+            .hero-text p {
+                margin-left: auto;
+                margin-right: auto;
+            }
+            .hero-badge {
+                justify-content: center;
+            }
+            .hero-image {
+                min-height: 220px;
+                border-radius: var(--radius-md);
+            }
+            .profile-card {
+                flex-direction: column;
+                text-align: center;
+            }
+            .contact-buttons {
+                justify-content: center;
+            }
+            .services-grid {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+                gap: 0.8rem;
+            }
+            .service-card {
+                border-radius: var(--radius-md);
+                padding: 1.2rem 0.7rem;
+            }
+            .image-gallery-grid {
+                grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+                gap: 10px;
+            }
+            .gallery-card {
+                border-radius: var(--radius-md);
+            }
+            .counties-section {
+                border-radius: var(--radius-lg);
+            }
+            .county-card {
+                min-width: 100%;
+                max-width: 100%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-text h2 {
+                font-size: 1.4rem;
+            }
+            .hero-image {
+                min-height: 200px;
+            }
+            .hero {
+                padding: 1rem 0 0;
+            }
+            .services-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 0.6rem;
+            }
+            .service-card {
+                padding: 1rem 0.5rem;
+                border-radius: var(--radius-sm);
+            }
+            .service-card i {
+                font-size: 1.5rem;
+                margin-bottom: 0.4rem;
+            }
+            .service-card h3 {
+                font-size: 0.9rem;
+            }
+            .service-card p {
+                font-size: 0.75rem;
+            }
+            .image-gallery-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 8px;
+            }
+            .gallery-card {
+                border-radius: var(--radius-sm);
+            }
+            .gallery-caption {
+                font-size: 0.72rem;
+                padding: 8px;
+            }
+            .btn-primary,
+            .btn-secondary {
+                padding: 10px 18px;
+                font-size: 0.82rem;
+                border-radius: 30px;
+            }
+            .profile-card {
+                padding: 1.2rem;
+                border-radius: var(--radius-md);
+            }
+            .county-card {
+                padding: 1rem;
+                border-radius: var(--radius-md);
+            }
+            .county-card h3 {
+                font-size: 1.1rem;
+            }
+            .city-list li {
+                font-size: 0.8rem;
+                padding: 5px 0;
+            }
+            .navbar {
+                position: sticky;
+                top: 0;
+            }
+            .logo-group h1 {
+                font-size: 1.3rem;
+            }
+            .pill-badge {
+                font-size: 0.7rem;
+                padding: 4px 10px;
+            }
+        }
+
+        /* ── Accessibility ────────────────── */
+        @media (prefers-reduced-motion: reduce) {
+            html {
+                scroll-behavior: auto;
+            }
+            *,
+            *::before,
+            *::after {
+                transition-duration: 0.01ms !important;
+                animation-duration: 0.01ms !important;
+            }
+        }
+        @media (prefers-color-scheme: dark) {
+            /* Light mode is core to this brand; no dark override needed */
+        }
+
+        /* ── Print ────────────────────────── */
+        @media print {
+            .navbar {
+                position: static;
+            }
+            .btn-primary,
+            .btn-secondary,
+            .contact-buttons {
+                display: none;
+            }
+            body {
+                font-size: 12pt;
+                color: #000;
+                background: #fff;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- ═══════════ NAVIGATION ═══════════ -->
+    <nav class="navbar" aria-label="Main navigation">
+        <div class="container nav-flex">
+            <div class="logo-group">
+                <h1>Magic Painting</h1>
+                <span>Interior · Exterior | Hudson Valley</span>
+            </div>
+            <div class="contact-info-header">
+                <a href="mailto:edioflores1917@gmail.com" aria-label="Email Edio Flores">
+                    <i class="fas fa-envelope" aria-hidden="true"></i> Edio Flores
+                </a>
+                <a href="tel:+18455377128" aria-label="Call (845) 537-7128">
+                    <i class="fas fa-phone-alt" aria-hidden="true"></i> (845) 537-7128
+                </a>
+                <span class="pill-badge">
+                    <i class="fas fa-map-marker-alt" aria-hidden="true"></i> Dutchess · Ulster · Orange
+                </span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ═══════════ MAIN CONTENT ═══════════ -->
+    <main>
+        <!-- ── Hero ── -->
+        <section class="container hero" aria-labelledby="hero-heading">
+            <div class="hero-grid">
+                <div class="hero-text">
+                    <div class="hero-badge">
+                        <i class="fas fa-brush" aria-hidden="true"></i> Premium Craftsmanship
+                    </div>
+                    <h2 id="hero-heading">Transform your home with expert painting</h2>
+                    <p>Interior · Exterior · Staining · Wallpaper Removal · Sheet Rock · Trimwork · Power Washing. Serving Dutchess, Ulster &amp; Orange County NY.</p>
+                    <a href="#contact" class="btn-primary">
+                        <i class="fas fa-calendar-check" aria-hidden="true"></i> Free Estimate
+                    </a>
+                </div>
+                <div class="hero-image" style="background-image: url('https://lh3.googleusercontent.com/d/1-6xIVT-cIhpKgv1QHHFQPyo4EUv70F4H=w800');" role="img" aria-label="Painting project showcase">
+                    <span class="img-placeholder-tag">✨ Recent Project</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- ── Services ── -->
+        <section class="container" aria-labelledby="services-heading">
+            <div class="section-title" id="services-heading">What We Offer</div>
+            <div class="services-grid">
+                <div class="service-card">
+                    <i class="fas fa-paint-roller" aria-hidden="true"></i>
+                    <h3>Interior Painting</h3>
+                    <p>Flawless walls, ceilings &amp; accents</p>
+                </div>
+                <div class="service-card">
+                    <i class="fas fa-home" aria-hidden="true"></i>
+                    <h3>Exterior Painting</h3>
+                    <p>Weather-resistant &amp; vibrant</p>
+                </div>
+                <div class="service-card">
+                    <i class="fas fa-tint" aria-hidden="true"></i>
+                    <h3>Staining</h3>
+                    <p>Decks, fences &amp; wood revival</p>
+                </div>
+                <div class="service-card">
+                    <i class="fas fa-cut" aria-hidden="true"></i>
+                    <h3>Wallpaper Removal</h3>
+                    <p>Steam &amp; safe stripping</p>
+                </div>
+                <div class="service-card">
+                    <i class="fas fa-drafting-compass" aria-hidden="true"></i>
+                    <h3>Sheet Rock Work</h3>
+                    <p>Repair, texture, finishing</p>
+                </div>
+                <div class="service-card">
+                    <i class="fas fa-border-all" aria-hidden="true"></i>
+                    <h3>All Trimwork</h3>
+                    <p>Baseboards, crowns, casing</p>
+                </div>
+                <div class="service-card">
+                    <i class="fas fa-water" aria-hidden="true"></i>
+                    <h3>Power Washing</h3>
+                    <p>Siding, driveways &amp; decks</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ── Service Areas ── -->
+        <section class="counties-section" aria-labelledby="areas-heading">
+            <div class="container">
+                <div class="section-title" id="areas-heading" style="margin-top:0;">Service Areas — NY</div>
+                <div class="county-flex">
+                    <div class="county-card">
+                        <h3><i class="fas fa-map-pin" aria-hidden="true"></i> Dutchess County</h3>
+                        <ul class="city-list">
+                            <li><i class="fas fa-city" aria-hidden="true"></i> Poughkeepsie</li>
+                            <li><i class="fas fa-city" aria-hidden="true"></i> Beacon</li>
+                            <li><i class="fas fa-city" aria-hidden="true"></i> Fishkill</li>
+                            <li><i class="fas fa-city" aria-hidden="true"></i> Wappingers Falls</li>
+                            <li><i class="fas fa-city" aria-hidden="true"></i> Rhinebeck</li>
+                        </ul>
+                    </div>
+                    <div class="county-card">
+                        <h3><i class="fas fa-mountain" aria-hidden="true"></i> Ulster County</h3>
+                        <ul class="city-list">
+                            <li><i class="fas fa-city" aria-hidden="true"></i> Kingston</li>
+                            <li><i class="fas fa-city" aria-hidden="true"></i> New Paltz</li>
+                            <li><i class="fas fa-city" aria-hidden="true"></i> Saugerties</li>
+                            <li><i class="fas fa-city" aria-hidden="true"></i> Ellenville</li>
+                            <li><i class="fas fa-city" aria-hidden="true"></i> Highland</li>
+                        </ul>
+                    </div>
+                    <div class="county-card">
+                        <h3><i class="fas fa-sun" aria-hidden="true"></i> Orange County</h3>
+                        <ul class="city-list">
+                            <li><i class="fas fa-city" aria-hidden="true"></i> Middletown</li>
+                            <li><i class="fas fa-city" aria-hidden="true"></i> Newburgh</li>
+                            <li><i class="fas fa-city" aria-hidden="true"></i> Monroe</li>
+                            <li><i class="fas fa-city" aria-hidden="true"></i> Warwick</li>
+                            <li><i class="fas fa-city" aria-hidden="true"></i> Goshen</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ── Gallery ── -->
+        <section class="container gallery-section" aria-labelledby="gallery-heading">
+            <div class="section-title" id="gallery-heading">Our Recent Work</div>
+            <div class="image-gallery-grid">
+                <div class="gallery-card">
+                    <div class="gallery-img" style="background-image: url('https://lh3.googleusercontent.com/d/19HKieNKYzT6CXWMDk9ORx-bH5aQxvOh2=w800');" role="img" aria-label="Interior painting project"></div>
+                    <div class="gallery-caption">🎨 Interior painting project</div>
+                </div>
+                <div class="gallery-card">
+                    <div class="gallery-img" style="background-image: url('https://lh3.googleusercontent.com/d/1m305LPhj3APrN5TJOOLdJ30nsXCmNQwG=w800');" role="img" aria-label="Exterior transformation"></div>
+                    <div class="gallery-caption">🏠 Exterior transformation</div>
+                </div>
+                <div class="gallery-card">
+                    <div class="gallery-img" style="background-image: url('https://lh3.googleusercontent.com/d/1BCTXBC6Ea2bXMMCJXQsAnrcOz1zlLAH-=w800');" role="img" aria-label="Deck staining and sealing"></div>
+                    <div class="gallery-caption">✨ Deck staining &amp; sealing</div>
+                </div>
+                <div class="gallery-card">
+                    <div class="gallery-img" style="background-image: url('https://lh3.googleusercontent.com/d/1f183WJMJWb30nPu7VVl9VIzuL85KmNYB=w800');" role="img" aria-label="Trim work and sheet rock"></div>
+                    <div class="gallery-caption">🛠️ Trim Work &amp; Sheet Rock</div>
+                </div>
+                <div class="gallery-card">
+                    <div class="gallery-img" style="background-image: url('https://lh3.googleusercontent.com/d/1x1VPYlOonbYJoMNuBIhnrjk9mmnpJ6jr=w800');" role="img" aria-label="Power washing and prep work"></div>
+                    <div class="gallery-caption">💦 Power Washing &amp; Prep</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ── Contact Profile ── -->
+        <section class="container" id="contact" aria-labelledby="contact-heading">
+            <div class="profile-card">
+                <div>
+                    <h3 id="contact-heading"><i class="fas fa-star-of-life" aria-hidden="true"></i> Magic Painting — Trusted Professionals</h3>
+                    <p>
+                        <span class="name-highlight"><i class="fas fa-user-tie" aria-hidden="true"></i> Edio Flores</span> – Manager<br>
+                        Interior &amp; Exterior specialists serving Hudson Valley for over 15 years.
+                    </p>
+                    <p><i class="fas fa-check-circle" style="color:#D97A2B;" aria-hidden="true"></i> Licensed · Insured · Free estimates</p>
+                    <div style="margin-top: 12px; display: flex; flex-wrap: wrap; gap: 6px;">
+                        <span class="pill-badge"><i class="fas fa-envelope" aria-hidden="true"></i> edioflores1917@gmail.com</span>
+                        <span class="pill-badge"><i class="fas fa-phone" aria-hidden="true"></i> (845) 537-7128</span>
+                    </div>
+                </div>
+                <div class="contact-buttons">
+                    <a href="tel:+18455377128" class="btn-primary" aria-label="Call now at (845) 537-7128">
+                        <i class="fas fa-phone-alt" aria-hidden="true"></i> Call Now
+                    </a>
+                    <a href="mailto:edioflores1917@gmail.com" class="btn-secondary" aria-label="Email Edio Flores">
+                        <i class="fas fa-paper-plane" aria-hidden="true"></i> Email Edio
+                    </a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- ═══════════ FOOTER ═══════════ -->
+    <footer role="contentinfo">
+        <p>&copy; 2025 Magic Painting — Interior · Exterior | Staining, Wallpaper Removal, Sheetrock, Trimwork, Power Washing</p>
+        <p style="margin-top: 10px;"><i class="fas fa-map-marked-alt" aria-hidden="true"></i> Proudly serving Dutchess, Ulster &amp; Orange County NY: Poughkeepsie, Beacon, Kingston, New Paltz, Middletown, Newburgh &amp; more.</p>
+        <p><i class="fas fa-envelope" aria-hidden="true"></i> edioflores1917@gmail.com &nbsp;|&nbsp; <i class="fas fa-phone" aria-hidden="true"></i> (845) 537-7128</p>
+    </footer>
+
+    <!-- ═══════════ SCRIPTS ═══════════ -->
+    <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+    <script src="/_sdk/element_sdk.js" type="text/javascript"></script>
+</body>
+</html>
